@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160">
+  <defs>
+    <linearGradient id="mbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0E1626"/>
+      <stop offset="1" stop-color="#132038"/>
+    </linearGradient>
+    <linearGradient id="mring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#00D4AA"/>
+      <stop offset="1" stop-color="#37E6C2"/>
+    </linearGradient>
+    <linearGradient id="mskin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F0C9A6"/>
+      <stop offset="1" stop-color="#E2B189"/>
+    </linearGradient>
+    <clipPath id="mclip"><circle cx="80" cy="80" r="72"/></clipPath>
+  </defs>
+  <circle cx="80" cy="80" r="78" fill="url(#mring)"/>
+  <circle cx="80" cy="80" r="72" fill="url(#mbg)"/>
+  <g clip-path="url(#mclip)">
+    <!-- shoulders -->
+    <path d="M18 168 C22 128 46 112 80 112 C114 112 138 128 142 168 Z" fill="#1C2A44"/>
+    <path d="M28 168 C34 138 52 124 80 124 C108 124 126 138 132 168 Z" fill="#243A5E"/>
+    <!-- neck -->
+    <rect x="68" y="92" width="24" height="26" rx="11" fill="#D8A57C"/>
+    <!-- head -->
+    <circle cx="80" cy="66" r="30" fill="url(#mskin)"/>
+    <!-- hair -->
+    <path d="M50 60 C50 40 66 32 80 32 C94 32 110 40 110 60 C110 52 100 48 92 49 C86 44 74 44 68 49 C60 48 50 52 50 60 Z" fill="#2B2320"/>
+    <path d="M52 60 C52 48 64 42 80 42 C96 42 108 48 108 60 L108 56 C104 50 92 47 80 47 C68 47 56 50 52 56 Z" fill="#39302B"/>
+    <!-- beard -->
+    <path d="M56 74 C58 90 68 98 80 98 C92 98 102 90 104 74 C100 84 92 88 80 88 C68 88 60 84 56 74 Z" fill="#2B2320" opacity=".55"/>
+    <!-- eyes -->
+    <circle cx="69" cy="66" r="3.4" fill="#2B2320"/>
+    <circle cx="91" cy="66" r="3.4" fill="#2B2320"/>
+    <!-- brows -->
+    <rect x="63" y="58" width="12" height="3" rx="1.5" fill="#2B2320"/>
+    <rect x="85" y="58" width="12" height="3" rx="1.5" fill="#2B2320"/>
+    <!-- smile -->
+    <path d="M72 78 C76 82 84 82 88 78" fill="none" stroke="#B5764F" stroke-width="2.4" stroke-linecap="round"/>
+  </g>
+</svg>

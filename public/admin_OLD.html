@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>مركز تحكم الفورمة</title>
+<style>
+/* ============================================================
+   ElForma Control Center — تنظيم جديد بالكامل:
+   شريط جانبي ثابت + مجموعات أقسام + لوحات عمل.
+   قاعدة صارمة: كل عنصر تحكم في الصفحة دي مربوط بمسار حقيقي في
+   api/admin.js وبيأثر على تطبيق الموبايل. مفيش زرار للديكور.
+   ============================================================ */
+:root{
+  --bg:#070b14; --bg2:#0b1220; --card:#101a2e; --card2:#0d1526;
+  --line:#1d2b45; --line2:#2a3d5c;
+  --txt:#e8eef9; --mut:#7d8ca8; --dim:#5a6a85;
+  --acc:#38bdf8; --acc2:#0ea5e9;
+  --ok:#34d399; --warn:#fbbf24; --err:#f87171; --pro:#a78bfa;
+  --r:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:system-ui,'Segoe UI',Tahoma,sans-serif;font-size:14px;line-height:1.6}
+button,input,select,textarea{font-family:inherit;font-size:inherit}
+a{color:var(--acc);text-decoration:none}
+
+/* ---------- Shell ---------- */
+#shell{display:flex;min-height:100vh}
+#side{width:246px;flex-shrink:0;background:var(--bg2);border-inline-start:1px solid var(--line);
+  display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+#brand{padding:20px 18px 14px;border-bottom:1px solid var(--line)}
+#brand b{display:block;font-size:17px;letter-spacing:.3px}
+#brand span{display:block;font-size:11px;color:var(--dim);margin-top:3px}
+.navgrp{padding:14px 10px 4px}
+.navgrp>h6{font-size:10px;color:var(--dim);letter-spacing:1.2px;padding:0 10px 7px;font-weight:700}
+.nav{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:9px;color:var(--mut);
+  cursor:pointer;border:1px solid transparent;font-size:13.5px;transition:.13s}
+.nav:hover{background:var(--card2);color:var(--txt)}
+.nav.on{background:var(--card);color:var(--txt);border-color:var(--line2);font-weight:700}
+.nav i{font-style:normal;width:20px;text-align:center;font-size:15px}
+.nav .pill{margin-inline-start:auto;background:var(--err);color:#fff;font-size:10px;font-weight:700;
+  min-width:19px;height:19px;border-radius:10px;display:grid;place-items:center;padding:0 5px}
+#sidefoot{margin-top:auto;padding:14px;border-top:1px solid var(--line);font-size:11px;color:var(--dim)}
+
+#main{flex:1;min-width:0;display:flex;flex-direction:column}
+#top{position:sticky;top:0;z-index:20;background:rgba(7,11,20,.93);backdrop-filter:blur(9px);
+  border-bottom:1px solid var(--line);padding:13px 22px;display:flex;align-items:center;gap:14px}
+#burger{display:none;background:var(--card);border:1px solid var(--line);color:var(--txt);
+  width:38px;height:38px;border-radius:9px;cursor:pointer;font-size:17px}
+#top h1{font-size:16.5px;font-weight:700}
+#top .sub{font-size:11.5px;color:var(--dim)}
+#who{margin-inline-start:auto;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--mut)}
+#body{padding:22px;max-width:1240px;width:100%}
+
+/* ---------- Panels ---------- */
+.pan{background:var(--card);border:1px solid var(--line);border-radius:var(--r);margin-bottom:18px;overflow:hidden}
+.pan>h3{padding:13px 16px;border-bottom:1px solid var(--line);font-size:13.5px;display:flex;
+  align-items:center;gap:9px;background:var(--card2)}
+.pan>h3 em{font-style:normal;margin-inline-start:auto;font-size:11px;color:var(--dim);font-weight:400}
+.pb{padding:16px}
+.note{font-size:11.5px;color:var(--dim);line-height:1.7}
+.note b{color:var(--mut)}
+
+/* ---------- Forms ---------- */
+.grid{display:grid;gap:13px;grid-template-columns:repeat(auto-fit,minmax(215px,1fr))}
+.f{display:flex;flex-direction:column;gap:5px}
+.f>label{font-size:11.5px;color:var(--mut);font-weight:600}
+.f>.hint{font-size:10.5px;color:var(--dim)}
+.in,select.in,textarea.in{background:var(--bg);border:1px solid var(--line);color:var(--txt);
+  padding:9px 11px;border-radius:9px;width:100%;outline:none;transition:.13s}
+.in:focus{border-color:var(--acc)}
+textarea.in{resize:vertical;min-height:66px}
+.ltr{direction:ltr;text-align:left}
+
+.btn{background:var(--card2);border:1px solid var(--line2);color:var(--txt);padding:9px 15px;
+  border-radius:9px;cursor:pointer;font-weight:600;font-size:13px;transition:.13s;white-space:nowrap}
+.btn:hover{filter:brightness(1.22)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.p{background:var(--acc2);border-color:var(--acc);color:#04121c}
+.btn.g{background:#0d3b2e;border-color:#1c6b52;color:#a7f3d0}
+.btn.w{background:#3d2f08;border-color:#7a5c11;color:#fde68a}
+.btn.d{background:#3d1218;border-color:#7a2530;color:#fecaca}
+.btn.s{padding:5px 10px;font-size:11.5px;border-radius:7px}
+.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+
+/* toggle */
+.tg{display:flex;align-items:center;gap:12px;padding:12px 13px;background:var(--bg);
+  border:1px solid var(--line);border-radius:11px}
+.tg input{appearance:none;width:42px;height:23px;background:#233250;border-radius:12px;
+  position:relative;cursor:pointer;flex-shrink:0;transition:.16s}
+.tg input:checked{background:var(--ok)}
+.tg input::after{content:'';position:absolute;top:3px;right:3px;width:17px;height:17px;
+  background:#fff;border-radius:50%;transition:.16s}
+.tg input:checked::after{right:22px}
+.tg .tx b{display:block;font-size:13px}
+.tg .tx span{font-size:11px;color:var(--dim)}
+
+/* ---------- Stats ---------- */
+.stats{display:grid;gap:13px;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));margin-bottom:18px}
+.st{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:15px}
+.st .k{font-size:11px;color:var(--dim);font-weight:600}
+.st .v{font-size:25px;font-weight:800;margin-top:5px;letter-spacing:-.5px}
+.st.acc .v{color:var(--acc)} .st.ok .v{color:var(--ok)}
+.st.warn .v{color:var(--warn)} .st.err .v{color:var(--err)}
+
+/* ---------- Tables ---------- */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:right;padding:10px 11px;color:var(--dim);font-size:11px;font-weight:700;
+  border-bottom:1px solid var(--line);white-space:nowrap;background:var(--card2)}
+td{padding:10px 11px;border-bottom:1px solid rgba(29,43,69,.55);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+
+.bg{display:inline-block;padding:2.5px 9px;border-radius:20px;font-size:10.5px;font-weight:700}
+.bg.ok{background:rgba(52,211,153,.15);color:var(--ok)}
+.bg.err{background:rgba(248,113,113,.15);color:var(--err)}
+.bg.warn{background:rgba(251,191,36,.15);color:var(--warn)}
+.bg.pro{background:rgba(167,139,250,.15);color:var(--pro)}
+.bg.mut{background:rgba(125,140,168,.14);color:var(--mut)}
+
+.empty{padding:34px;text-align:center;color:var(--dim);font-size:13px}
+.spin{width:20px;height:20px;border:2.5px solid var(--line2);border-top-color:var(--acc);
+  border-radius:50%;animation:sp .7s linear infinite;display:inline-block}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* announcement item */
+.ann{background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:13px;margin-bottom:11px}
+.ann.off{opacity:.55}
+.ann .hd{display:flex;gap:10px;align-items:flex-start}
+.ann .hd img{width:52px;height:52px;object-fit:cover;border-radius:8px;flex-shrink:0}
+.ann .hd .t{flex:1;min-width:0}
+.ann .hd .t b{display:block;font-size:13.5px}
+.ann .hd .t p{font-size:11.5px;color:var(--mut);margin-top:3px}
+.ann .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.ann .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px;
+  padding-top:11px;border-top:1px solid var(--line)}
+.ord{display:flex;flex-direction:column;gap:3px}
+.ord button{background:var(--card2);border:1px solid var(--line2);color:var(--mut);width:26px;
+  height:21px;border-radius:6px;cursor:pointer;font-size:10px;line-height:1}
+.ord button:hover:not(:disabled){color:var(--txt)}
+.ord button:disabled{opacity:.3;cursor:not-allowed}
+
+#toast{position:fixed;bottom:22px;left:22px;z-index:100;display:flex;flex-direction:column;gap:9px}
+.ts{background:var(--card);border:1px solid var(--line2);border-inline-start:3px solid var(--acc);
+  padding:11px 16px;border-radius:10px;font-size:13px;box-shadow:0 9px 30px rgba(0,0,0,.55);
+  animation:in .22s;max-width:340px}
+.ts.ok{border-inline-start-color:var(--ok)} .ts.err{border-inline-start-color:var(--err)}
+@keyframes in{from{transform:translateY(12px);opacity:0}}
+
+.warnbox{background:rgba(251,191,36,.09);border:1px solid rgba(251,191,36,.32);
+  border-radius:11px;padding:13px;font-size:12.5px;color:#fde68a;line-height:1.75;margin-bottom:15px}
+.okbox{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.3);
+  border-radius:11px;padding:13px;font-size:12.5px;color:#a7f3d0;line-height:1.75;margin-bottom:15px}
+
+@media(max-width:900px){
+  #side{position:fixed;inset-inline-end:0;top:0;z-index:40;transform:translateX(100%);transition:.2s}
+  #side.open{transform:none;box-shadow:-16px 0 44px rgba(0,0,0,.6)}
+  #burger{display:block}
+  #body{padding:15px}
+}
+</style>
+</head>
+<body>
+<div id="shell">
+  <aside id="side">
+    <div id="brand"><b>مركز تحكم الفورمة</b><span>لوحة إدارة التطبيق والموقع</span></div>
+
+    <div class="navgrp">
+      <h6>المتابعة</h6>
+      <div class="nav" data-s="dash"><i>◈</i> نظرة عامة</div>
+      <div class="nav" data-s="pay"><i>▤</i> المدفوعات <span class="pill" id="pillPay" hidden>0</span></div>
+      <div class="nav" data-s="users"><i>◉</i> المستخدمون</div>
+      <div class="nav" data-s="audit"><i>≡</i> سجل العمليات</div>
+    </div>
+
+    <div class="navgrp">
+      <h6>التواصل مع التطبيق</h6>
+      <div class="nav" data-s="push"><i>◆</i> الإشعارات (Push)</div>
+      <div class="nav" data-s="ann"><i>▣</i> الإعلانات داخل التطبيق</div>
+    </div>
+
+    <div class="navgrp">
+      <h6>تحكم التطبيق</h6>
+      <div class="nav" data-s="appcfg"><i>⚙</i> إعدادات التطبيق</div>
+      <div class="nav" data-s="feat"><i>✦</i> مفاتيح المزايا</div>
+      <div class="nav" data-s="videos" data-v="videos"><i>▶</i> فيديوهات التمارين <span class="pill" id="pillVid" hidden>0</span></div>
+    </div>
+
+    <div class="navgrp">
+      <h6>الاشتراكات والتسويق</h6>
+      <div class="nav" data-s="price"><i>◇</i> الأسعار</div>
+      <div class="nav" data-s="coup"><i>％</i> الكوبونات</div>
+      <div class="nav" data-s="ref"><i>⇄</i> الإحالات</div>
+      <div class="nav" data-s="cms"><i>✎</i> محتوى الموقع</div>
+    </div>
+
+    <div id="sidefoot">
+      <div id="whoFoot">…</div>
+      <a href="/api/auth/logout" style="color:var(--err)">تسجيل الخر��ج</a>
+    </div>
+  </aside>
+
+  <div id="main">
+    <header id="top">
+      <button id="burger" onclick="document.getElementById('side').classList.toggle('open')">☰</button>
+      <div><h1 id="ttl">نظرة عامة</h1><div class="sub" id="tsub">…</div></div>
+      <div id="who"><span class="spin"></span></div>
+    </header>
+    <main id="body"><div class="empty"><span class="spin"></span></div></main>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+/* ==========================================================
+   Transport
+   ========================================================== */
+const V = document.getElementById('body');
+async function api(u){
+  try{
+    const r = await fetch(u,{credentials:'same-origin'});
+    return {ok:r.ok, status:r.status, data:await r.json().catch(()=>({}))};
+  }catch(e){ return {ok:false, status:0, data:{error:'network'}}; }
+}
+async function post(u,b){
+  try{
+    const r = await fetch(u,{method:'POST',credentials:'same-origin',
+      headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});
+    return {ok:r.ok, status:r.status, data:await r.json().catch(()=>({}))};
+  }catch(e){ return {ok:false, status:0, data:{error:'network'}}; }
+}
+async function postForm(u,fd){
+  try{
+    const r = await fetch(u,{method:'POST',credentials:'same-origin',body:fd});
+    return {ok:r.ok, status:r.status, data:await r.json().catch(()=>({}))};
+  }catch(e){ return {ok:false, status:0, data:{error:'network'}}; }
+}
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+const escA = esc;
+function toast(m,k){
+  const d=document.createElement('div'); d.className='ts '+(k||''); d.textContent=m;
+  document.getElementById('toast').appendChild(d);
+  setTimeout(()=>d.remove(),3600);
+}
+function err(r,fb){ toast((r&&r.data&&r.data.error)||fb||'حدث خطأ','err'); }
+function ask(m){ return window.confirm(m); }
+function val(id){ const e=document.getElementById(id); return e?e.value:''; }
+function chk(id){ const e=document.getElementById(id); return !!(e&&e.checked); }
+function fdate(s){ if(!s)return '—'; const d=new Date(s); return isNaN(d)?'—':d.toLocaleString('ar-EG',{dateStyle:'short',timeStyle:'short'}); }
+function loading(){ V.innerHTML='<div class="empty"><span class="spin"></span></div>'; }
+/* datetime-local <-> ISO */
+function toLocalInput(iso){
+  if(!iso) return '';
+  const d=new Date(iso); if(isNaN(d)) return '';
+  const p=n=>String(n).padStart(2,'0');
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'T'+p(d.getHours())+':'+p(d.getMinutes());
+}
+function fromLocalInput(v){ if(!v) return null; const d=new Date(v); return isNaN(d)?null:d.toISOString(); }
+
+/* ==========================================================
+   Sections registry
+   ========================================================== */
+const SECTIONS = {
+  dash:  {t:'نظرة عامة',            s:'أرقام حقيقية من قاعدة البيانات',            f:secDash},
+  pay:   {t:'المدفوعات',             s:'مراجعة إيصالات التحويل',                    f:secPay},
+  users: {t:'المستخدمون',            s:'بحث ومنح وسحب الاشتراكات',                  f:secUsers},
+  audit: {t:'سجل العمليات',          s:'كل إجراء إداري مسجّل بوقته',                f:secAudit},
+  push:  {t:'الإشعارات (Push)',      s:'إشعار يوصل الهاتف والتطبيق مقفول',          f:secPush},
+  ann:   {t:'الإعلانات داخل التطبيق',s:'كروت وإعلانات منبثقة داخل الموبايل',        f:secAnn},
+  appcfg:{t:'إعدادات التطبيق',       s:'الصيانة وبوّابة الإصدار والمفاتيح العامة',  f:secAppCfg},
+  feat:  {t:'مفاتيح المزايا',         s:'تشغيل وإيقاف مزايا الذكاء',                 f:secFeat},
+  videos:{t:'فيديوهات التمارين',     s:'استبدال فيديو أي تمرين ومعالجة البلاغات',   f:secVid},
+  price: {t:'الأسعار',               s:'أسعار الباقات بالجنيه والدولار',            f:secPrice},
+  coup:  {t:'الكوبونات',             s:'أكواد الخصم وحدود الاستخدام',               f:secCoup},
+  ref:   {t:'الإحالات',              s:'المحيلين وأكوادهم',                         f:secRef},
+  cms:   {t:'محتوى الموقع',          s:'النصوص القابلة للتعديل',                    f:secCms},
+};
+
+/* بيحول أي قيمة جاية من الـ hash أو من السايدبار لمفتاح قسم موجود فعلًا.
+   تاب الفيديوهات متعامل معاه بالاسم الرسمي 'videos' وكمان بالاختصار القديم 'vid'،
+   عشان أي لينك قديم محفوظ للوحة يفضل شغال مايوديش لصفحة فاضية. */
+function resolveSection(v){
+  if(v==='videos' || v==='vid') return 'videos';
+  return SECTIONS[v] ? v : 'dash';
+}
+
+function go(v){
+  const key = resolveSection(v);
+  const s = SECTIONS[key];
+  document.getElementById('ttl').textContent = s.t;
+  document.getElementById('tsub').textContent = s.s;
+  document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('on', n.dataset.s===key));
+  document.getElementById('side').classList.remove('open');
+  if(location.hash.slice(1)!==key) history.replaceState(null,'','#'+key);
+  loading();
+  s.f();
+}
+document.querySelectorAll('.nav').forEach(n=>n.addEventListener('click',()=>go(n.dataset.s)));
+window.addEventListener('hashchange',()=>go(resolveSection(location.hash.slice(1)||'dash')));
+
+/* ==========================================================
+   1. Dashboard  — GET /api/admin/stats + /payments + /push/status
+   ========================================================== */
+const STAT_LABELS = {
+  users:'إجمالي المستخدمين', total_users:'إجمالي المستخدمين',
+  active_subs:'اشتراكات فعّالة', activeSubs:'اشتراكات فعّالة',
+  pending:'مدفوعات معلّقة', pending_payments:'مدفوعات معلّقة',
+  revenue:'الإيرادات', trials:'تجارب مجانية', verified:'حسابات موثّقة',
+  reviews:'التقييمات', sessions:'جلسات التمرين', coupons:'الكوبونات',
+};
+async function secDash(){
+  const [st, pay, ps] = await Promise.all([
+    api('/api/admin/stats'), api('/api/admin/payments?status=pending'), api('/api/admin/push/status')
+  ]);
+  let h = '';
+
+  // Push readiness — الحقيقة زي ما هي، مش رقم مطمئن.
+  if(ps.ok){
+    const d = ps.data || {};
+    const dev = (d.devices && d.devices.active) || 0;
+    if(!d.configured){
+      h += '<div class="warnbox"><b>الإشعارات (Push) غير مُهيّأة بعد.</b><br>'
+        + 'محرك الإرسال موجود وشغال، لكنه محتاج مفتاح Firebase (Service Account) في متغير البيئة '
+        + '<code>EF_FCM_SERVICE_ACCOUNT</code> على الاستضافة. لغاية ما تحطه، أي إشعار تبعته '
+        + 'هيتسجّل ��يظهر للمتدرب عند فتح التطبيق أو في الفحص الدوري — بس مش هيرن على الهاتف والتطبيق مقفول.</div>';
+    }else{
+      h += '<div class="okbox"><b>الإشعارات جاهزة.</b> '+dev+' جهاز مسجّل ومستعد يستقبل إشعار فوري.</div>';
+    }
+  }
+
+  h += '<div class="stats">';
+  if(st.ok){
+    const src = (st.data && typeof st.data.stats==='object' && st.data.stats) ? st.data.stats : (st.data||{});
+    let n = 0;
+    Object.keys(src).forEach(k=>{
+      const v = src[k];
+      if(typeof v !== 'number') return;
+      const isPend = /pending/i.test(k);
+      h += '<div class="st '+(isPend&&v>0?'warn':'acc')+'"><div class="k">'+esc(STAT_LABELS[k]||k)+'</div>'
+         + '<div class="v">'+v.toLocaleString('ar-EG')+'</div></div>';
+      n++;
+    });
+    if(!n) h += '<div class="st"><div class="k">الإحصائيات</div><div class="v">—</div></div>';
+  }
+  if(ps.ok){
+    const d = ps.data||{}, r = d.reach||{};
+    h += '<div class="st ok"><div class="k">أجهزة مستقبِلة للإشعارات</div><div class="v">'+((d.devices&&d.devices.active)||0)+'</div></div>'
+       + '<div class="st pro"><div class="k">أجهزة مشتركين</div><div class="v">'+(r.pro||0)+'</div></div>';
+  }
+  h += '</div>';
+
+  // Pending payments preview
+  const list = (pay.ok && (pay.data.payments||pay.data.items||[])) || [];
+  const pending = list.length;
+  const pill = document.getElementById('pillPay');
+  pill.hidden = !pending; pill.textContent = pending;
+
+  h += '<div class="pan"><h3>▤ مدفوعات في انتظار المراجعة<em>'+pending+'</em></h3>';
+  if(!pending){
+    h += '<div class="empty">مفيش مدفوعات معلّقة</div>';
+  }else{
+    h += '<div class="tw"><table><thead><tr><th>#</th><th>المستخدم</th><th>الباقة</th><th>التاريخ</th><th>إجراء</th></tr></thead><tbody>';
+    list.slice(0,8).forEach(p=>{
+      h += '<tr><td>'+esc(p.id)+'</td><td>'+esc(p.email||p.user_email||'—')+'</td><td>'+esc(p.plan||p.plan_code||'—')+'</td>'
+        + '<td>'+fdate(p.created_at)+'</td>'
+        + '<td><button class="btn s p" onclick="payAct('+Number(p.id)+',&quot;approve&quot;)">قبول</button> '
+        + '<button class="btn s d" onclick="payAct('+Number(p.id)+',&quot;reject&quot;)">رفض</button></td></tr>';
+    });
+    h += '</tbody></table></div>';
+  }
+  h += '</div>';
+
+  h += '<div class="pan"><h3>◈ إزاي اللوحة دي مربوطة بالتطبيق</h3><div class="pb note">'
+    + '<b>الإشعارات</b> بتتبعت لتوكنات أجهزة حقيقية مسجّلة من التطبيق (FCM)، وبتتخزن كمان كنسخة '
+    + 'يقراها التطبيق في الفحص الدوري.<br>'
+    + '<b>الإعلانات</b> بيقراها التطبيق من <code>/api/mobile/bootstrap</code> مفلترة بالمكان والجمهور والوقت ومرتّبة بترتيبك.<br>'
+    + '<b>إعدادات التطبيق</b> (الصيانة وبوّابة الإصدار) بيقراها التطبيق عند كل تشغيل، فأي تغيير هنا '
+    + 'يوصل من غير نشر إصدار جديد.</div></div>';
+
+  V.innerHTML = h;
+}
+async function payAct(id, action){
+  const r = await post('/api/admin/payment/'+action, {id:id});
+  if(r.ok){ toast(action==='approve'?'تم القبول':'تم الرفض','ok'); go('dash'); } else err(r);
+}
+
+/* ==========================================================
+   2. Payments — GET /api/admin/payments?status=
+   ========================================================== */
+let PAY_ST = 'pending';
+async function secPay(){
+  const r = await api('/api/admin/payments?status='+encodeURIComponent(PAY_ST));
+  const list = (r.ok && (r.data.payments||r.data.items||[])) || [];
+  const tab = (k,l)=>'<button class="btn s '+(PAY_ST===k?'p':'')+'" onclick="PAY_ST=&quot;'+k+'&quot;;go(&quot;pay&quot;)">'+l+'</button>';
+  let h = '<div class="pan"><h3>▤ الإيصالات<em>'+list.length+'</em></h3><div class="pb"><div class="row">'
+    + tab('pending','معلّقة')+tab('approved','مقبولة')+tab('rejected','مرفوضة')+'</div></div>';
+  if(!list.length){ h += '<div class="empty">لا نتائج</div>'; }
+  else{
+    h += '<div class="tw"><table><thead><tr><th>#</th><th>المستخدم</th><th>الباقة</th><th>المبلغ</th>'
+      + '<th>مصدر التحويل</th><th>الحالة</th><th>التاريخ</th><th>الإيصال</th><th>إجراء</th></tr></thead><tbody>';
+    list.forEach(p=>{
+      const s = String(p.status||'pending');
+      const cls = s==='approved'?'ok':(s==='rejected'?'err':'warn');
+      h += '<tr><td>'+esc(p.id)+'</td><td>'+esc(p.email||p.user_email||'—')+'</td>'
+        + '<td>'+esc(p.plan||p.plan_code||'—')+'</td><td>'+esc(p.amount==null?'—':p.amount)+'</td>'
+        + '<td>'+esc(p.method==='wallet'?('محفظة'+(p.walletLabel?' — '+p.walletLabel:'')):(p.method?'InstaPay':'—'))
+          + (p.sender?'<br>حوّلت من: '+esc(p.sender):'')
+          + (p.ref?'<br>مرجع: '+esc(p.ref):'')+'</td>'
+        + '<td><span class="bg '+cls+'">'+esc(s)+'</span></td><td>'+fdate(p.created_at)+'</td>'
+        + '<td><a href="/api/admin/receipt?id='+encodeURIComponent(p.id)+'" target="_blank">عرض</a></td><td>'
+        + (s==='pending'
+            ? '<button class="btn s p" onclick="payAct2('+Number(p.id)+',&quot;approve&quot;)">قبول</button> '
+              +'<button class="btn s d" onclick="payAct2('+Number(p.id)+',&quot;reject&quot;)">رفض</button>'
+            : '—')
+        + '</td></tr>';
+    });
+    h += '</tbody></table></div>';
+  }
+  V.innerHTML = h + '</div>';
+}
+async function payAct2(id, action){
+  const r = await post('/api/admin/payment/'+action, {id:id});
+  if(r.ok){ toast('تم','ok'); go('pay'); } else err(r);
+}
+
+/* ==========================================================
+   3. Users — GET /api/admin/users?q= , POST user/subscription , user/delete
+   ========================================================== */
+async function secUsers(){
+  V.innerHTML = '<div class="pan"><h3>◉ بحث المستخدمين</h3><div class="pb">'
+    + '<div class="row"><input class="in ltr" id="uq" placeholder="إيميل أو اسم أو رقم" style="max-width:340px">'
+    + '<button class="btn p" onclick="findUsers()">بحث</button></div>'
+    + '<div class="note" style="margin-top:9px">«منح» بيفتح اشتراك فعلي بعدد شهور تحدده، و«سحب» بيرجّعه مجاني فورًا — '
+    + 'والتطبيق بيشوف التغيير من أول تشغيل.</div></div></div>'
+    + '<div id="ubox"></div>';
+  findUsers();
+}
+async function findUsers(){
+  const box = document.getElementById('ubox'); if(!box) return;
+  box.innerHTML = '<div class="empty"><span class="spin"></span></div>';
+  const r = await api('/api/admin/users?q='+encodeURIComponent(val('uq')));
+  if(!r.ok) return void (box.innerHTML='<div class="pan"><div class="empty">خطأ في التحميل</div></div>');
+  const list = r.data.users||[];
+  if(!list.length) return void (box.innerHTML='<div class="pan"><div class="empty">لا نتائج</div></div>');
+  let h = '<div class="pan"><h3>◉ النتائج<em>'+list.length+'</em></h3><div class="tw"><table><thead><tr>'
+    + '<th>#</th><th>الإيميل</th><th>الاسم</th><th>الهاتف</th><th>الباقة</th><th>الحالة</th><th>الانضمام</th><th>إجراء</th>'
+    + '</tr></thead><tbody>';
+  list.forEach(u=>{
+    const plan = String(u.plan||'free');
+    const st = String(u.status||'—');
+    h += '<tr><td>'+esc(u.id)+'</td><td class="ltr">'+esc(u.email)+'</td><td>'+esc(u.name||'—')+'</td>'
+      + '<td class="ltr">'+esc(u.phone||'—')+'</td>'
+      + '<td><span class="bg '+(plan==='free'?'mut':'pro')+'">'+esc(plan)+'</span></td>'
+      + '<td><span class="bg '+(st==='active'?'ok':'mut')+'">'+esc(st)+'</span></td>'
+      + '<td>'+fdate(u.created_at)+'</td><td><div class="row">'
+      + '<button class="btn s p" onclick="subAct('+Number(u.id)+',&quot;grant&quot;)">منح</button>'
+      + '<button class="btn s w" onclick="subAct('+Number(u.id)+',&quot;revoke&quot;)">سحب</button>'
+      + (u.admin?'':'<button class="btn s d" onclick="delUser('+Number(u.id)+','+JSON.stringify(String(u.email)).replace(/"/g,'&quot;')+')">حذف</button>')
+      + '</div></td></tr>';
+  });
+  box.innerHTML = h + '</tbody></table></div></div>';
+}
+async function subAct(uid, action){
+  const body = {userId:uid, action:action};
+  if(action==='grant'){
+    const m = prompt('كم شهر؟','1'); if(!m) return;
+    body.months = Number(m);
+  }
+  const r = await post('/api/admin/user/subscription', body);
+  if(r.ok){ toast('تم ✓','ok'); findUsers(); } else err(r);
+}
+async function delUser(uid, email){
+  if(!ask('حذف المستخدم '+email+'؟\nمفيش رجوع في العملية دي.')) return;
+  const r = await post('/api/admin/user/delete', {userId:uid});
+  if(r.ok){ toast('تم الحذف','ok'); findUsers(); } else err(r);
+}
+
+/* ==========================================================
+   4. Audit — GET /api/admin/audit
+   ========================================================== */
+async function secAudit(){
+  const r = await api('/api/admin/audit?limit=150');
+  const list = (r.ok && r.data.items) || [];
+  let h = '<div class="pan"><h3>≡ آخر '+list.length+' عملية</h3>';
+  if(!list.length) h += '<div class="empty">لا سجلات</div>';
+  else{
+    h += '<div class="tw"><table><thead><tr><th>الوقت</th><th>مين</th><th>العملية</th><th>IP</th></tr></thead><tbody>';
+    list.forEach(a=>{
+      h += '<tr><td>'+fdate(a.created_at)+'</td><td class="ltr">'+esc(a.email||a.user_id||'—')+'</td>'
+        + '<td><code>'+esc(a.action)+'</code></td><td class="ltr">'+esc(a.ip||'—')+'</td></tr>';
+    });
+    h += '</tbody></table></div>';
+  }
+  V.innerHTML = h + '</div>';
+}
+
+/* ==========================================================
+   5. Push notifications — POST /api/admin/notifications/send
+   ========================================================== */
+async function secPush(){
+  const ps = await api('/api/admin/push/status');
+  const d = ps.ok ? (ps.data||{}) : {};
+  const reach = d.reach||{};
+  let head = '';
+  if(ps.ok && !d.configured){
+    head = '<div class="warnbox"><b>مفتاح Firebase لسه مش متضاف.</b><br>'
+      + 'الإرسال الفوري (اللي يرن على الهاتف والتطبيق مقفول) محتاج <code>EF_FCM_SERVICE_ACCOUNT</code> '
+      + 'في إعدادات الاستضافة. لحد ساعتها الإشعار بيتسجّل وبيظهر للمتدرب من الفحص الدوري ومن أول فتح للتطبيق.</div>';
+  }else if(ps.ok){
+    head = '<div class="okbox"><b>جاهز للإرسال الفوري.</b> الوصول الحالي: '
+      + 'الكل <b>'+(reach.all||0)+'</b> جهاز · المشتركون <b>'+(reach.pro||0)+'</b> · المجانيون <b>'+(reach.free||0)+'</b>.</div>';
+  }
+
+  V.innerHTML = head
+    + '<div class="pan"><h3>◆ إرسال إشعار</h3><div class="pb">'
+    + '<div class="grid">'
+    +   '<div class="f"><label>العنوان *</label><input class="in" id="nt_title" maxlength="120" placeholder="عنوان الإشعار"></div>'
+    +   '<div class="f"><label>لمين يوصل</label><select class="in" id="nt_target">'
+    +     '<option value="all">كل المستخدمين</option><option value="pro">المشتركين فقط</option>'
+    +     '<option value="free">المجانيين فقط</option></select>'
+    +     '<div class="hint">الفلترة بتحصل على السيرفر من جدول الاشتراكات.</div></div>'
+    +   '<div class="f"><label>أو مستخدم واحد (ID)</label><input class="in ltr" id="nt_uid" placeholder="مثال: 42">'
+    +     '<div class="hint">لو كتبت رقم هنا، هيتجاهل اختيار «لمين يوصل».</div></div>'
+    + '</div>'
+    + '<div class="f" style="margin-top:13px"><label>النص *</label>'
+    +   '<textarea class="in" id="nt_body" maxlength="400" placeholder="نص الإشعار اللي هيظهر على الهاتف"></textarea></div>'
+    + '<div class="grid" style="margin-top:13px">'
+    +   '<div class="f"><label>شكل الظهور داخل التطبيق</label><select class="in" id="nt_type">'
+    +     '<option value="popup">نافذة منبثقة</option><option value="banner">شريط علوي</option>'
+    +     '<option value="silent">تسجيل بدون Push</option></select></div>'
+    +   '<div class="f"><label>مدة الصلاحية (ساعة)</label><input class="in" id="nt_exp" type="number" min="1" max="720" value="48">'
+    +     '<div class="hint">بعد المدة دي مايظهرش تاني للي مافتحوش التطبيق.</div></div>'
+    +   '<div class="f"><label>جدولة الإرسال (اختياري)</label><input class="in" id="nt_sched" type="datetime-local">'
+    +     '<div class="hint">سيبه فاضي = يتبعت حالًا.</div></div>'
+    +   '<div class="f"><label>رابط عند الضغط (اختياري)</label><input class="in ltr" id="nt_link" placeholder="https://…"></div>'
+    + '</div>'
+    + '<div class="f" style="margin-top:13px"><label>صورة الإشعار (اختياري)</label>'
+    +   '<div class="row"><input type="file" accept="image/*" onchange="upImg(this,&quot;nt_image&quot;,&quot;nt_prev&quot;)">'
+    +   '<input class="in ltr" id="nt_image" placeholder="أو رابط صورة" style="max-width:320px"></div>'
+    +   '<div id="nt_prev"></div></div>'
+    + '<div class="row" style="margin-top:15px">'
+    +   '<button class="btn p" id="ntBtn" onclick="sendNotif()">إرسال الإشعار</button>'
+    +   '<button class="btn" onclick="go(&quot;push&quot;)">تحديث</button></div>'
+    + '</div></div>'
+    + '<div id="ntbox"><div class="empty"><span class="spin"></span></div></div>';
+  loadNotifs();
+}
+async function upImg(input, targetId, prevId){
+  if(!input.files || !input.files[0]) return;
+  const f = input.files[0];
+  if(f.size > 5*1024*1024) return toast('الصورة أكبر من 5 ميجا','err');
+  const prev = document.getElementById(prevId);
+  if(prev) prev.innerHTML = '<span class="spin"></span> جاري الرفع…';
+  const fd = new FormData(); fd.append('image', f);
+  const r = await postForm('/api/admin/upload', fd);
+  if(r.ok && r.data.url){
+    const t = document.getElementById(targetId); if(t) t.value = r.data.url;
+    if(prev) prev.innerHTML = '<img src="'+escA(r.data.url)+'" style="max-height:110px;border-radius:9px;margin-top:8px">';
+    toast('تم رفع الصورة ✓','ok');
+  }else{ if(prev) prev.innerHTML=''; err(r,'فشل الرفع'); }
+}
+async function sendNotif(){
+  const title = val('nt_title').trim(), body = val('nt_body').trim();
+  if(!title || !body) return toast('العنوان والنص مطلوبين','err');
+  const uid = val('nt_uid').trim();
+  const btn = document.getElementById('ntBtn'); if(btn){ btn.disabled = true; btn.textContent='جاري الإرسال…'; }
+  const r = await post('/api/admin/notifications/send', {
+    title: title, body: body,
+    type: val('nt_type'),
+    target: uid ? uid : val('nt_target'),
+    expiresHours: Number(val('nt_exp'))||48,
+    scheduleAt: fromLocalInput(val('nt_sched')),
+    image: val('nt_image').trim(),
+    link: val('nt_link').trim(),
+    push: val('nt_type') !== 'silent'
+  });
+  if(btn){ btn.disabled = false; btn.textContent='إرسال الإشعار'; }
+  if(!r.ok) return err(r);
+  // تقرير توصيل حقيقي، مش رسالة تطمين.
+  const d = r.data.delivery || {};
+  if(d.skipped === 'scheduled') toast('تمت الجدولة ✓ — هيتبعت في وقته','ok');
+  else if(d.skipped === 'not_configured') toast('اتسجّل ✓ — بس Push مش مُهيّأ، فهيظهر عند فتح التطبيق','warn');
+  else if(d.skipped === 'no_devices') toast('اتسجّل ✓ — مفيش أجهزة مسجّلة للإشعارات لسه','warn');
+  else if(d.skipped === 'push_disabled_in_settings') toast('اتسجّل ✓ — الإشعارات مقفولة من إعدادات التطبيق','warn');
+  else if(d.skipped === 'auth_failed') toast('اتسجّل ✓ — بس مفتاح Firebase مرفوض، راجع البيانات','err');
+  else if(d.skipped === 'push_not_requested') toast('اتسجّل بدون Push ✓','ok');
+  else toast('وصل لـ '+(d.sent||0)+' جهاز من '+(d.attempted||0)+(d.failed?(' · فشل '+d.failed):''),'ok');
+  ['nt_title','nt_body','nt_link','nt_image','nt_uid','nt_sched'].forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; });
+  const p = document.getElementById('nt_prev'); if(p) p.innerHTML='';
+  loadNotifs();
+}
+async function loadNotifs(){
+  const box = document.getElementById('ntbox'); if(!box) return;
+  const r = await api('/api/admin/notifications');
+  const list = (r.ok && r.data.items) || [];
+  let h = '<div class="pan"><h3>◆ الإشعارات المرسلة<em>'+list.length+'</em></h3>';
+  if(!list.length){ box.innerHTML = h + '<div class="empty">لا إشعارات</div></div>'; return; }
+  const now = Date.now();
+  h += '<div class="tw"><table><thead><tr><th>العنوان</th><th>الجمهور</th><th>الحالة</th>'
+    + '<th>التوصيل</th><th>أُرسل</th><th>ينتهي</th><th></th></tr></thead><tbody>';
+  list.forEach(n=>{
+    const expired = n.expires_at && Date.parse(n.expires_at) < now;
+    const sched = n.scheduled_at && Date.parse(n.scheduled_at) > now;
+    const tg = String(n.target||'all');
+    const tgl = tg==='all'?'الكل':(tg==='pro'?'المشتركين':(tg==='free'?'المجانيين':'مستخدم #'+tg));
+    const d = n.delivery || {};
+    let dtx = '—';
+    if(d.skipped) dtx = '<span class="bg mut">'+esc(d.skipped)+'</span>';
+    else if(typeof d.sent === 'number') dtx = '<span class="bg '+(d.sent?'ok':'warn')+'">'+d.sent+' / '+(d.attempted||0)+'</span>';
+    h += '<tr><td><b>'+esc(n.title)+'</b><div class="note">'+esc(String(n.body||'').slice(0,90))+'</div></td>'
+      + '<td>'+esc(tgl)+'</td>'
+      + '<td>'+(sched?'<span class="bg warn">مجدول</span>':(expired?'<span class="bg mut">منتهي</span>':'<span class="bg ok">نشط</span>'))+'</td>'
+      + '<td>'+dtx+'</td><td>'+fdate(n.sent_at)+'</td><td>'+fdate(n.expires_at)+'</td>'
+      + '<td><button class="btn s d" onclick="delNotif('+JSON.stringify(String(n.id)).replace(/"/g,'&quot;')+')">حذف</button></td></tr>';
+  });
+  box.innerHTML = h + '</tbody></table></div></div>';
+}
+async function delNotif(id){
+  if(!ask('حذف الإشعار؟')) return;
+  const r = await post('/api/admin/notifications/delete', {id:id});
+  if(r.ok){ toast('تم الحذف','ok'); loadNotifs(); } else err(r);
+}
+
+/* ==========================================================
+   6. Announcements — GET/POST /api/admin/announcements
+   القائمة كلها بتتحفظ مرة واحدة، وترتيبها هو الترتيب في التطبيق.
+   ========================================================== */
+let ANNS = [];
+async function secAnn(){
+  V.innerHTML = '<div class="pan"><h3>▣ إعلان جديد</h3><div class="pb">'
+    + '<div class="grid">'
+    +   '<div class="f"><label>العنوان *</label><input class="in" id="an_title" maxlength="120"></div>'
+    +   '<div class="f"><label>نص زر الإجراء</label><input class="in" id="an_cta" maxlength="40" placeholder="اعرف أكتر"></div>'
+    +   '<div class="f"><label>رابط الزر</label><input class="in ltr" id="an_link" placeholder="https://…"></div>'
+    +   '<div class="f"><label>رقم واتساب/اتصال</label><input class="in ltr" id="an_phone" placeholder="201…"></div>'
+    + '</div>'
+    + '<div class="f" style="margin-top:13px"><label>النص</label><textarea class="in" id="an_body" maxlength="500"></textarea></div>'
+    + '<div class="grid" style="margin-top:13px">'
+    +   '<div class="f"><label>مكان الظهور</label><select class="in" id="an_place">'
+    +     '<option value="both">الرئيسية + الحساب</option><option value="home">الرئيسية فقط</option>'
+    +     '<option value="account">الحساب فقط</option></select></div>'
+    +   '<div class="f"><label>طريقة العرض</label><select class="in" id="an_mode">'
+    +     '<option value="card">كارت داخل الصفحة</option><option value="popup">نافذة منبثقة</option>'
+    +     '<option value="both">الاتنين</option></select></div>'
+    +   '<div class="f"><label>الجمهور</label><select class="in" id="an_aud">'
+    +     '<option value="all">الكل</option><option value="free">المجانيين فقط</option>'
+    +     '<option value="pro">المشتركين فقط</option></select>'
+    +     '<div class="hint">مفيد للعروض: تظهر للمجاني وتختفي بعد الاشتراك.</div></div>'
+    +   '<div class="f"><label>الشكل واللون</label><select class="in" id="an_style">'
+    +     '<option value="info">معلومة (أزرق)</option><option value="success">إيجابي (أخضر)</option>'
+    +     '<option value="warn">تنبيه (أصفر)</option><option value="promo">عرض (بنفسجي)</option></select></div>'
+    +   '<div class="f"><label>يبدأ في</label><input class="in" id="an_start" type="datetime-local">'
+    +     '<div class="hint">فاضي = يبدأ فورًا.</div></div>'
+    +   '<div class="f"><label>ينتهي في</label><input class="in" id="an_end" type="datetime-local">'
+    +     '<div class="hint">فاضي = بلا نهاية.</div></div>'
+    +   '<div class="f"><label>أقصى عدد مرات ظهور للمستخدم</label><input class="in" id="an_views" type="number" min="0" max="100" value="0">'
+    +     '<div class="hint">0 = بلا حدود.</div></div>'
+    + '</div>'
+    + '<div class="tg" style="margin-top:13px"><input type="checkbox" id="an_dis" checked>'
+    +   '<div class="tx"><b>المستخدم يقدر يقفله</b><span>لو مقفول، الكارت بيفضل ظاهر لحد ما توقفه أو ينتهي وقته</span></div></div>'
+    + '<div class="f" style="margin-top:13px"><label>صورة الإعلان</label>'
+    +   '<div class="row"><input type="file" accept="image/*" onchange="upImg(this,&quot;an_image&quot;,&quot;an_prev&quot;)">'
+    +   '<input class="in ltr" id="an_image" placeholder="أو رابط صورة" style="max-width:320px"></div>'
+    +   '<div id="an_prev"></div></div>'
+    + '<div class="row" style="margin-top:15px">'
+    +   '<button class="btn p" onclick="addAnn()">إضافة الإعلان</button>'
+    +   '<button class="btn" onclick="previewAnn()">معاينة اللي بيوصل للمتدرب</button></div>'
+    + '</div></div><div id="anbox"><div class="empty"><span class="spin"></span></div></div>';
+  loadAnns();
+}
+async function loadAnns(){
+  const box = document.getElementById('anbox'); if(!box) return;
+  const r = await api('/api/admin/announcements');
+  ANNS = (r.ok && r.data.items) || [];
+  const PL = {both:'الرئيسية + الحساب', home:'الرئيسية', account:'الحساب'};
+  const MD = {card:'كارت', popup:'منبثق', both:'كارت + منبثق'};
+  const AU = {all:'الكل', free:'مجانيين', pro:'مشتركين'};
+  const SY = {info:'معلومة', success:'إيجابي', warn:'تنبيه', promo:'عرض'};
+  let h = '<div class="pan"><h3>▣ الإعلانات الحالية<em>'+ANNS.length+' — الترتيب هنا هو الترتيب في التطبيق</em></h3><div class="pb">';
+  if(!ANNS.length) h += '<div class="empty">مفيش إعلانات</div>';
+  ANNS.forEach((a,i)=>{
+    const now = Date.now();
+    let state = '<span class="bg ok">ظاهر</span>';
+    if(a.active === false) state = '<span class="bg mut">موقوف</span>';
+    else if(a.startsAt && Date.parse(a.startsAt) > now) state = '<span class="bg warn">مجدول</span>';
+    else if(a.endsAt && Date.parse(a.endsAt) < now) state = '<span class="bg err">انتهى</span>';
+    h += '<div class="ann'+(a.active===false?' off':'')+'"><div class="hd">'
+      + '<div class="ord">'
+      +   '<button onclick="moveAnn('+i+',-1)" '+(i===0?'disabled':'')+' title="لأعلى">▲</button>'
+      +   '<button onclick="moveAnn('+i+',1)" '+(i===ANNS.length-1?'disabled':'')+' title="لأسفل">▼</button>'
+      + '</div>'
+      + (a.image?'<img src="'+escA(a.image)+'" alt="">':'')
+      + '<div class="t"><b>'+esc(a.title||'(بدون عنوان)')+'</b><p>'+esc(String(a.body||'').slice(0,140))+'</p>'
+      + '<div class="meta">'+state
+      +   '<span class="bg mut">#'+(i+1)+'</span>'
+      +   '<span class="bg mut">'+esc(PL[a.placement]||a.placement||'both')+'</span>'
+      +   '<span class="bg mut">'+esc(MD[a.mode]||a.mode||'card')+'</span>'
+      +   '<span class="bg pro">'+esc(AU[a.audience]||'الكل')+'</span>'
+      +   '<span class="bg mut">'+esc(SY[a.style]||'معلومة')+'</span>'
+      +   (a.maxViews?'<span class="bg mut">حد الظهور '+a.maxViews+'</span>':'')
+      +   (a.dismissible===false?'<span class="bg warn">غير قابل للإغلاق</span>':'')
+      +   (a.startsAt?'<span class="bg mut">من '+fdate(a.startsAt)+'</span>':'')
+      +   (a.endsAt?'<span class="bg mut">إلى '+fdate(a.endsAt)+'</span>':'')
+      + '</div></div></div>'
+      + '<div class="acts">'
+      +   '<button class="btn s '+(a.active===false?'g':'w')+'" onclick="toggleAnn('+i+')">'+(a.active===false?'تفعيل':'إيقاف')+'</button>'
+      +   '<button class="btn s" onclick="editAnnDates('+i+')">تعديل التوقيت</button>'
+      +   '<button class="btn s" onclick="editAnnAud('+i+')">تعديل الجمهور</button>'
+      +   '<button class="btn s" onclick="dupAnn('+i+')">تكرار</button>'
+      +   '<button class="btn s d" onclick="delAnn('+i+')">حذف</button>'
+      + '</div></div>';
+  });
+  box.innerHTML = h + '</div></div>';
+}
+async function saveAnns(msg){
+  // order بيتحدد من مكان العنصر في المصفوفة — والسيرفر بيثبّته.
+  ANNS.forEach((a,i)=>{ a.order = i; });
+  const r = await post('/api/admin/announcements', {items:ANNS});
+  if(r.ok){ toast(msg||'تم الحفظ ✓','ok'); loadAnns(); } else err(r);
+}
+async function addAnn(){
+  const title = val('an_title').trim();
+  if(!title) return toast('العنوان مطلوب','err');
+  const cur = await api('/api/admin/announcements');
+  ANNS = (cur.ok && cur.data.items) || [];
+  ANNS.unshift({
+    title: title,
+    body: val('an_body'),
+    link: val('an_link').trim(),
+    cta: val('an_cta').trim(),
+    phone: val('an_phone').trim(),
+    image: val('an_image').trim(),
+    placement: val('an_place'),
+    mode: val('an_mode'),
+    audience: val('an_aud'),
+    style: val('an_style'),
+    startsAt: fromLocalInput(val('an_start')),
+    endsAt: fromLocalInput(val('an_end')),
+    maxViews: Number(val('an_views'))||0,
+    dismissible: chk('an_dis'),
+    active: true
+  });
+  await saveAnns('تمت إضافة الإعلان ✓');
+  ['an_title','an_body','an_link','an_cta','an_phone','an_image','an_start','an_end'].forEach(id=>{
+    const e = document.getElementById(id); if(e) e.value='';
+  });
+  const p = document.getElementById('an_prev'); if(p) p.innerHTML='';
+}
+function moveAnn(i, dir){
+  const j = i + dir;
+  if(j < 0 || j >= ANNS.length) return;
+  const t = ANNS[i]; ANNS[i] = ANNS[j]; ANNS[j] = t;
+  saveAnns('تم تغيير الترتيب ✓');
+}
+function toggleAnn(i){ ANNS[i].active = (ANNS[i].active === false); saveAnns(ANNS[i].active?'تم التفعيل ✓':'تم الإيقاف ✓'); }
+function dupAnn(i){
+  const c = JSON.parse(JSON.stringify(ANNS[i]));
+  delete c.id; c.active = false; c.title = (c.title||'') + ' (نسخة)';
+  ANNS.splice(i+1, 0, c);
+  saveAnns('تم التكرار — النسخة موقوفة لحد ما تراجعها');
+}
+function delAnn(i){
+  if(!ask('حذف الإعلان «'+(ANNS[i].title||'')+'»؟')) return;
+  ANNS.splice(i,1); saveAnns('تم الحذف ✓');
+}
+function editAnnDates(i){
+  const a = ANNS[i];
+  const s = prompt('يبدأ في (سيبه فاضي = فورًا)\nالصيغة: 2026-08-25 20:00', a.startsAt?toLocalInput(a.startsAt).replace('T',' '):'');
+  if(s === null) return;
+  const e = prompt('ينتهي في (سيبه فاضي = بلا نهاية)\nالصيغة: 2026-09-01 20:00', a.endsAt?toLocalInput(a.endsAt).replace('T',' '):'');
+  if(e === null) return;
+  const pa = v => { v = String(v||'').trim(); if(!v) return null; const d = new Date(v.replace(' ','T')); return isNaN(d)?null:d.toISOString(); };
+  if(s.trim() && !pa(s)) return toast('تاريخ البداية غير مفهوم','err');
+  if(e.trim() && !pa(e)) return toast('تاريخ النهاية غير مفهوم','err');
+  a.startsAt = pa(s); a.endsAt = pa(e);
+  saveAnns('تم تحديث التوقيت ✓');
+}
+function editAnnAud(i){
+  const a = ANNS[i];
+  const v = prompt('الجمهور: اكتب all أو free أو pro', a.audience||'all');
+  if(v === null) return;
+  const t = String(v).trim().toLowerCase();
+  if(['all','free','pro'].indexOf(t) < 0) return toast('اكتب all أو free أو pro','err');
+  a.audience = t; saveAnns('تم تحديث الجمهور ✓');
+}
+async function previewAnn(){
+  const r = await api('/api/admin/announcements/preview');
+  if(!r.ok) return err(r);
+  const items = r.data.items || r.data.announcements || [];
+  toast('اللي بيوصل للمتدرب دلوقتي: '+items.length+' إعلان', 'ok');
+}
+
+/* ==========================================================
+   7. App config — GET/POST /api/admin/app-config
+   ========================================================== */
+async function secAppCfg(){
+  const r = await api('/api/admin/app-config');
+  if(!r.ok) return void (V.innerHTML='<div class="pan"><div class="empty">خطأ في التحميل</div></div>');
+  const c = r.data.config || {};
+  const tg = (id,lab,desc,on)=>'<div class="tg"><input type="checkbox" id="'+id+'"'+(on?' checked':'')
+    + '><div class="tx"><b>'+esc(lab)+'</b><span>'+esc(desc)+'</span></div></div>';
+
+  V.innerHTML =
+      '<div class="warnbox">كل إعداد في الصفحة دي بيقراه التطبيق عند التشغيل من '
+    + '<code>/api/mobile/bootstrap</code> و<code>/api/mobile/app-version</code> — '
+    + 'يعني التغيير يوصل للمتدربين من غير نشر إصدار جديد.</div>'
+
+    + '<div class="pan"><h3>⚙ وضع الصيانة</h3><div class="pb">'
+    + tg('c_maint','إيقاف التطبيق مؤقتًا','لما يكون مفعّل، التطبيق بيعرض شاشة صيانة ويمنع الاستخدام',c.maintenance)
+    + '<div class="grid" style="margin-top:13px">'
+    +   '<div class="f"><label>عنوان شاشة الصيانة</label><input class="in" id="c_mtitle" value="'+escA(c.maintenanceTitle||'')+'"></div>'
+    +   '<div class="f"><label>رسالة الصيانة</label><input class="in" id="c_mmsg" value="'+escA(c.maintenanceMessage||'')+'"></div>'
+    + '</div></div></div>'
+
+    + '<div class="pan"><h3>⚙ بوّابة الإصدار (التحديث الإجباري)</h3><div class="pb">'
+    + '<div class="grid">'
+    +   '<div class="f"><label>أقل رقم بناء مسموح</label><input class="in" id="c_min" type="number" min="0" value="'+Number(c.minBuild||0)+'">'
+    +     '<div class="hint">أي نسخة أقدم من الرقم ده هتتوقف وتطلب تحديث. 0 = البوّابة مقفولة.</div></div>'
+    +   '<div class="f"><label>أحدث رقم بناء</label><input class="in" id="c_latest" type="number" min="0" value="'+Number(c.latestBuild||0)+'">'
+    +     '<div class="hint">الأقدم منه بيشوف تنبيه تحديث يقدر يقفله.</div></div>'
+    +   '<div class="f"><label>رابط التحديث (المتجر أو APK)</label><input class="in ltr" id="c_store" value="'+escA(c.storeUrl||'')+'"></div>'
+    +   '<div class="f"><label>رسالة التحديث</label><input class="in" id="c_umsg" value="'+escA(c.updateMessage||'')+'"></div>'
+    + '</div></div></div>'
+
+    + '<div class="pan"><h3>⚙ الإعلانات والإشعارات (مفاتيح عامة)</h3><div class="pb">'
+    + '<div class="grid">'
+    +   '<div>'+tg('c_ann','تشغيل الإعلانات داخل التطبيق','لو اتقفل، مفيش أي إعلان بيوصل حتى لو مفعّل',c.announcementsEnabled)+'</div>'
+    +   '<div>'+tg('c_push','تشغيل الإشعارات','قفل عام يمنع أي إرسال Push جديد',c.pushEnabled)+'</div>'
+    + '</div>'
+    + '<div class="f" style="margin-top:13px;max-width:280px"><label>كل قد إيه التطبيق يفحص الإشعارات في الخلفية (دقيقة)</label>'
+    +   '<input class="in" id="c_poll" type="number" min="15" max="720" value="'+Number(c.pollMinutes||15)+'">'
+    +   '<div class="hint">ده الاحتياطي اللي يضمن وصول الإشعار لو التوكن مات. أقل قيمة يسمح بيها أندرويد 15 دقيقة.</div></div>'
+    + '</div></div>'
+
+    + '<div class="pan"><h3>⚙ التجربة المجانية والمزايا العامة</h3><div class="pb">'
+    + '<div class="grid">'
+    +   '<div>'+tg('c_trial','تشغيل التجربة المجانية','لو اتقفل، زر التجربة مايظهرش في التطبيق',c.trialEnabled)+'</div>'
+    +   '<div class="f"><label>مدة التجربة (يوم)</label><input class="in" id="c_tdays" type="number" min="1" max="30" value="'+Number(c.trialDays||3)+'"></div>'
+    +   '<div>'+tg('c_rev','تشغيل التقييمات','إظهار طلب التقييم داخل التطبيق',c.reviewsEnabled)+'</div>'
+    +   '<div>'+tg('c_refr','تشغيل نظام الإحالات','إظهار كود الإحالة للمتدرب',c.referralsEnabled)+'</div>'
+    + '</div></div></div>'
+
+    + '<div class="pan"><h3>⚙ التواصل والدعم</h3><div class="pb"><div class="grid">'
+    +   '<div class="f"><label>واتساب الدعم</label><input class="in ltr" id="c_wa" value="'+escA(c.supportWhatsapp||'')+'" placeholder="201…"></div>'
+    +   '<div class="f"><label>إيميل الدعم</label><input class="in ltr" id="c_mail" value="'+escA(c.supportEmail||'')+'"></div>'
+    + '</div></div></div>'
+
+    + '<div class="row"><button class="btn p" onclick="saveAppCfg()">حفظ إعدادات التطبيق</button>'
+    + '<button class="btn" onclick="go(&quot;appcfg&quot;)">إلغاء التغييرات</button></div>';
+}
+async function saveAppCfg(){
+  const body = {
+    maintenance: chk('c_maint'),
+    maintenanceTitle: val('c_mtitle'),
+    maintenanceMessage: val('c_mmsg'),
+    minBuild: Number(val('c_min'))||0,
+    latestBuild: Number(val('c_latest'))||0,
+    storeUrl: val('c_store').trim(),
+    updateMessage: val('c_umsg'),
+    announcementsEnabled: chk('c_ann'),
+    pushEnabled: chk('c_push'),
+    pollMinutes: Number(val('c_poll'))||15,
+    trialEnabled: chk('c_trial'),
+    trialDays: Number(val('c_tdays'))||3,
+    reviewsEnabled: chk('c_rev'),
+    referralsEnabled: chk('c_refr'),
+    supportWhatsapp: val('c_wa').trim(),
+    supportEmail: val('c_mail').trim()
+  };
+  if(body.maintenance && !ask('تفعيل وضع الصيانة هيمنع كل المتدربين من استخدام التطبيق. متأكد؟')) return;
+  const r = await post('/api/admin/app-config', {config:body});
+  if(r.ok){ toast('تم الحفظ ✓ — التغيير سارٍ على التطبيق','ok'); go('appcfg'); } else err(r);
+}
+
+/* ==========================================================
+   8. Feature flags — GET/POST /api/admin/features
+   ========================================================== */
+async function secFeat(){
+  const r = await api('/api/admin/features');
+  if(!r.ok) return void (V.innerHTML='<div class="pan"><div class="empty">خطأ</div></div>');
+  const f = r.data.features || {};
+  const keys = Object.keys(f).length ? Object.keys(f) : ['ai_nutritionist','ai_coach'];
+  const META = {
+    ai_nutritionist:['المغذّي الذكي','تحليل الخطة الغذائية والنصائح التلقائية'],
+    ai_coach:['المدرب الذكي','تحليل خطة التمرين وتوصيات التدريب']
+  };
+  let h = '<div class="pan"><h3>✦ مفاتيح المزايا</h3><div class="pb">'
+    + '<div class="note" style="margin-bottom:13px">المفاتيح دي بيقراها التطبيق والموقع من نفس الجدول '
+    + '(<code>feature_flags</code>)، فمفيش احتمال إن الاتنين يختلفوا.</div><div class="grid">';
+  keys.forEach(k=>{
+    const m = META[k] || [k,''];
+    h += '<div class="tg"><input type="checkbox" id="ft_'+escA(k)+'"'+(f[k]?' checked':'')
+      + '><div class="tx"><b>'+esc(m[0])+'</b><span>'+esc(m[1])+'</span></div></div>';
+  });
+  h += '</div><button class="btn p" style="margin-top:15px" onclick="saveFeat('+JSON.stringify(keys).replace(/"/g,'&quot;')+')">حفظ المفاتيح</button>'
+    + '</div></div>';
+  V.innerHTML = h;
+}
+async function saveFeat(keys){
+  const body = {};
+  keys.forEach(k=>{ body[k] = chk('ft_'+k); });
+  const r = await post('/api/admin/features', body);
+  if(r.ok) toast('تم الحفظ ✓','ok'); else err(r);
+}
+
+/* ==========================================================
+   9. Videos — GET /api/admin/videos , video/set|remove|reset , video-reports
+   ========================================================== */
+/* طابور بلاغات الفيديو: المتدرب بيبلّغ من التطبيق إن فيديو تمرين مش شغال،
+   والبلاغ بيقعد في الطابور ده لحد ما الأدمن يستبدل الفيديو أو يقفل البلاغ.
+   مفصولة لوحدها عشان الشارة في السايدبار تتحدّث من غير إعادة بناء القسم كله. */
+async function loadVideoReports(){
+  const rep = await api('/api/admin/video-reports');
+  const reports = (rep.ok && (rep.data.items||rep.data.reports||[])) || [];
+  const pill = document.getElementById('pillVid');
+  if(pill){ pill.hidden = !reports.length; pill.textContent = reports.length; }
+  if(!reports.length) return '';
+
+  let h = '<div class="pan"><h3>▶ بلاغات فيديو<em>'+reports.length+'</em></h3><div class="tw"><table><thead><tr>'
+    + '<th>التمرين</th><th>السبب</th><th>عدد البلاغات</th><th>إجراء</th></tr></thead><tbody>';
+  reports.forEach(x=>{
+    const k = String(x.key||x.exercise_key||'');
+    h += '<tr><td>'+esc(x.name||x.exercise_name||k)+'</td><td>'+esc(x.reason||'—')+'</td>'
+      + '<td>'+esc(x.count||x.n||1)+'</td>'
+      + '<td><button class="btn s g" onclick="resolveRep('+JSON.stringify(k).replace(/"/g,'&quot;')+')">تم الحل</button></td></tr>';
+  });
+  return h + '</tbody></table></div></div>';
+}
+
+async function secVid(){
+  const [v, repHtml] = await Promise.all([api('/api/admin/videos'), loadVideoReports()]);
+  const items = (v.ok && (v.data.items||v.data.exercises||[])) || [];
+
+  let h = repHtml;
+  h += '<div class="pan"><h3>▶ فيديوهات التمارين<em>'+items.length+'</em></h3><div class="pb">'
+    + '<div class="note" style="margin-bottom:11px">استبدال الفيديو بيأثر فورًا على شاشة التمرين في التطبيق. '
+    + 'حط ID فيديو يوتيوب (مثال: <code>dQw4w9WgXcQ</code>).</div>';
+  if(!items.length) h += '<div class="empty">لا تمارين</div>';
+  else{
+    h += '<div class="tw"><table><thead><tr><th>التمرين</th><th>الفيديو الحالي</th><th>ID جديد</th><th>إجراء</th></tr></thead><tbody>';
+    items.slice(0,400).forEach((it,i)=>{
+      const k = String(it.key||''), nm = String(it.name||k);
+      const cur = it.videoId || it.video_id || '';
+      h += '<tr><td>'+esc(nm)+'</td>'
+        + '<td class="ltr">'+(cur?'<code>'+esc(cur)+'</code>'+(it.override?' <span class="bg warn">مستبدل</span>':''):'—')+'</td>'
+        + '<td><input class="in ltr" id="vd_'+i+'" style="min-width:150px" placeholder="videoId"></td>'
+        + '<td><div class="row">'
+        +   '<button class="btn s p" onclick="vidSet('+i+','+JSON.stringify(k).replace(/"/g,'&quot;')+','+JSON.stringify(nm).replace(/"/g,'&quot;')+')">حفظ</button>'
+        +   '<button class="btn s w" onclick="vidAct(&quot;remove&quot;,'+JSON.stringify(k).replace(/"/g,'&quot;')+','+JSON.stringify(nm).replace(/"/g,'&quot;')+')">إخفاء</button>'
+        +   '<button class="btn s" onclick="vidAct(&quot;reset&quot;,'+JSON.stringify(k).replace(/"/g,'&quot;')+','+JSON.stringify(nm).replace(/"/g,'&quot;')+')">استرجاع</button>'
+        + '</div></td></tr>';
+    });
+    h += '</tbody></table></div>';
+  }
+  V.innerHTML = h + '</div></div>';
+}
+async function vidSet(i, key, name){
+  const v = val('vd_'+i).trim();
+  if(!v) return toast('اكتب ID الفيديو','err');
+  const r = await post('/api/admin/video/set', {key:key, name:name, videoId:v});
+  if(r.ok){ toast('تم الحفظ ✓','ok'); go('videos'); } else err(r);
+}
+async function vidAct(action, key, name){
+  /* مسارات صريحة بدل بناء الـURL بالجمع: قيمة جاية من الواجهة
+     ماينفعش تدخل في مسار طلب إداري، وكده كل endpoint مقروء بوضوح. */
+  const path = action==='remove' ? '/api/admin/video/remove'
+             : action==='reset'  ? '/api/admin/video/reset'
+             : '';
+  if(!path) return toast('إجراء غير معروف','err');
+  const r = await post(path, {key:key, name:name});
+  if(r.ok){ toast('تم','ok'); go('videos'); } else err(r);
+}
+async function resolveRep(key){
+  const r = await post('/api/admin/video-report/resolve', {key:key});
+  if(r.ok){ toast('تم إغلاق البلاغ','ok'); go('videos'); } else err(r);
+}
+
+/* ==========================================================
+   10. Pricing — GET/POST /api/admin/pricing
+   ========================================================== */
+const PLAN_CODES = ['m1','m3','m6'];
+const PLAN_NAMES = {m1:'شهر واحد', m3:'3 شهور', m6:'6 شهور'};
+async function secPrice(){
+  const r = await api('/api/admin/pricing');
+  if(!r.ok) return void (V.innerHTML='<div class="pan"><div class="empty">خطأ</div></div>');
+  const plans = r.data.plans || [];
+  let h = '<div class="pan"><h3>◇ أسعار الباقات</h3><div class="pb"><div class="grid">';
+  PLAN_CODES.forEach(code=>{
+    const p = plans.find(x=>x.code===code) || {};
+    h += '<div class="pan" style="margin:0"><h3>'+esc(PLAN_NAMES[code])+'</h3><div class="pb">'
+      + '<div class="f"><label>السعر (جنيه)</label><input class="in" id="p_'+code+'_egp" value="'+escA(p.price_egp||0)+'"></div>'
+      + '<div class="f" style="margin-top:9px"><label>سعر مشطوب (جنيه)</label><input class="in" id="p_'+code+'_aegp" value="'+escA(p.anchor_egp||0)+'"></div>'
+      + '<div class="f" style="margin-top:9px"><label>السعر (دولار)</label><input class="in" id="p_'+code+'_usd" value="'+escA(p.price_usd||0)+'"></div>'
+      + '<div class="f" style="margin-top:9px"><label>سعر مشطوب (دولار)</label><input class="in" id="p_'+code+'_ausd" value="'+escA(p.anchor_usd||0)+'"></div>'
+      + '<div class="f" style="margin-top:9px"><label>شارة</label><input class="in" id="p_'+code+'_badge" value="'+escA(p.badge||'')+'" placeholder="الأكثر شعبية"></div>'
+      + '<div class="f" style="margin-top:9px"><label>وصف مختصر</label><input class="in" id="p_'+code+'_tag" value="'+escA(p.tagline||'')+'"></div>'
+      + '</div></div>';
+  });
+  h += '</div><button class="btn p" style="margin-top:15px" onclick="savePrice()">حفظ الأسعار</button></div></div>';
+  V.innerHTML = h;
+}
+async function savePrice(){
+  const body = {};
+  PLAN_CODES.forEach(c=>{
+    body[c] = {
+      price_egp: Number(val('p_'+c+'_egp'))||0,
+      anchor_egp: Number(val('p_'+c+'_aegp'))||0,
+      price_usd: Number(val('p_'+c+'_usd'))||0,
+      anchor_usd: Number(val('p_'+c+'_ausd'))||0,
+      badge: val('p_'+c+'_badge'),
+      tagline: val('p_'+c+'_tag')
+    };
+  });
+  const r = await post('/api/admin/pricing', body);
+  if(r.ok) toast('تم حفظ الأسعار ✓','ok'); else err(r);
+}
+
+/* ==========================================================
+   11. Coupons — /api/admin/coupons , coupon/upsert|toggle|delete
+   ========================================================== */
+async function secCoup(){
+  V.innerHTML = '<div class="pan"><h3>％ كوبون جديد / تعديل</h3><div class="pb"><div class="grid">'
+    + '<div class="f"><label>الكود *</label><input class="in ltr" id="cp_code" placeholder="SUMMER20" style="text-transform:uppercase"></div>'
+    + '<div class="f"><label>النوع</label><select class="in" id="cp_type"><option value="percent">نسبة %</option><option value="fixed">مبلغ ثابت</option></select></div>'
+    + '<div class="f"><label>القيمة *</label><input class="in" id="cp_val" type="number" min="1"></div>'
+    + '<div class="f"><label>الباقة</label><select class="in" id="cp_plan"><option value="">كل الباقات</option>'
+    +   '<option value="m1">شهر</option><option value="m3">3 شهور</option><option value="m6">6 شهور</option></select></div>'
+    + '<div class="f"><label>أقصى استخدام (0=مفتوح)</label><input class="in" id="cp_max" type="number" min="0" value="0"></div>'
+    + '<div class="f"><label>ينتهي في</label><input class="in" id="cp_exp" type="date"></div>'
+    + '</div><button class="btn p" style="margin-top:13px" onclick="upsertCoup()">حفظ الكوبون</button></div></div>'
+    + '<div id="cpbox"><div class="empty"><span class="spin"></span></div></div>';
+  loadCoups();
+}
+async function loadCoups(){
+  const box = document.getElementById('cpbox'); if(!box) return;
+  const r = await api('/api/admin/coupons');
+  if(!r.ok) return void (box.innerHTML='<div class="pan"><div class="empty">خطأ</div></div>');
+  const list = r.data.coupons||[], uses = r.data.uses||[];
+  let h = '<div class="pan"><h3>％ الكوبونات<em>'+list.length+'</em></h3>';
+  if(!list.length){ box.innerHTML = h + '<div class="empty">لا كوبونات</div></div>'; return; }
+  h += '<div class="tw"><table><thead><tr><th>الكود</th><th>النوع</th><th>القيمة</th><th>الباقة</th>'
+    + '<th>الاستخدام</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody>';
+  list.forEach(c=>{
+    const used = c.redeemed != null ? c.redeemed : uses.filter(x=>x.code===c.code).length;
+    const q = s => JSON.stringify(String(s)).replace(/"/g,'&quot;');
+    h += '<tr><td class="ltr"><b>'+esc(c.code)+'</b></td>'
+      + '<td>'+(c.type==='percent'?'نسبة':'ثابت')+'</td>'
+      + '<td>'+esc(c.value)+(c.type==='percent'?'%':' ج')+'</td>'
+      + '<td>'+esc(c.plan_scope||'الكل')+'</td>'
+      + '<td>'+used+' / '+(c.max_redemptions||'∞')+'</td>'
+      + '<td><span class="bg '+(c.active?'ok':'err')+'">'+(c.active?'مفعّل':'موقوف')+'</span></td>'
+      + '<td><div class="row">'
+      +   '<button class="btn s '+(c.active?'w':'g')+'" onclick="togCoup('+q(c.code)+','+(c.active?'false':'true')+')">'+(c.active?'إيقاف':'تفعيل')+'</button>'
+      +   '<button class="btn s" onclick="fillCoup('+q(c.code)+','+Number(c.value)+','+q(c.type)+','+q(c.plan_scope||'')+','+Number(c.max_redemptions||0)+')">تعديل</button>'
+      +   '<button class="btn s d" onclick="delCoup('+q(c.code)+')">حذف</button>'
+      + '</div></td></tr>';
+  });
+  box.innerHTML = h + '</tbody></table></div></div>';
+}
+function fillCoup(code,v,type,plan,max){
+  document.getElementById('cp_code').value = code;
+  document.getElementById('cp_val').value = v;
+  document.getElementById('cp_type').value = type;
+  document.getElementById('cp_plan').value = plan||'';
+  document.getElementById('cp_max').value = max||0;
+  window.scrollTo(0,0);
+}
+async function upsertCoup(){
+  const body = {
+    code: val('cp_code').trim().toUpperCase(),
+    type: val('cp_type'),
+    value: Number(val('cp_val')),
+    plan_scope: val('cp_plan')||null,
+    max_redemptions: Number(val('cp_max'))||0,
+    expires_at: val('cp_exp')||null,
+    active: 1
+  };
+  if(!body.code) return toast('اكتب الكود','err');
+  if(!body.value) return toast('اكتب القيمة','err');
+  const r = await post('/api/admin/coupon/upsert', body);
+  if(r.ok){ toast('تم الحفظ ✓','ok'); ['cp_code','cp_val','cp_exp'].forEach(i=>{const e=document.getElementById(i); if(e)e.value='';}); loadCoups(); }
+  else err(r);
+}
+async function togCoup(code, active){
+  const r = await post('/api/admin/coupon/toggle', {code:code, active:active});
+  if(r.ok){ toast('تم','ok'); loadCoups(); } else err(r);
+}
+async function delCoup(code){
+  if(!ask('حذف الكوبون '+code+'؟')) return;
+  const r = await post('/api/admin/coupon/delete', {code:code});
+  if(r.ok){ toast('تم الحذف','ok'); loadCoups(); } else err(r);
+}
+
+/* ==========================================================
+   12. Referrals — /api/admin/referrals , referral/create
+   ========================================================== */
+async function secRef(){
+  V.innerHTML = '<div class="pan"><h3>⇄ إضافة محيل</h3><div class="pb"><div class="grid">'
+    + '<div class="f"><label>الاسم *</label><input class="in" id="rf_name"></div>'
+    + '<div class="f"><label>الإيميل *</label><input class="in ltr" id="rf_email"></div>'
+    + '<div class="f"><label>كود الإحالة *</label><input class="in ltr" id="rf_code" style="text-transform:uppercase"></div>'
+    + '<div class="f"><label>نسبة الخصم % *</label><input class="in" id="rf_pct" type="number" min="1" max="100"></div>'
+    + '<div class="f"><label>الباقة</label><select class="in" id="rf_plan"><option value="">كل الباقات</option>'
+    +   '<option value="m1">شهر</option><option value="m3">3 شهور</option><option value="m6">6 شهور</option></select></div>'
+    + '<div class="f"><label>أقصى استخدام (0=مفتوح)</label><input class="in" id="rf_max" type="number" value="0"></div>'
+    + '</div><button class="btn p" style="margin-top:13px" onclick="createRef()">إنشاء محيل</button>'
+    + '<div class="note" style="margin-top:9px">بيتعمل كوبون بالكود المحدد ويتربط بالمحيل، والاستخدام بيتحسب تلقائيًا.</div>'
+    + '</div></div><div id="rfbox"><div class="empty"><span class="spin"></span></div></div>';
+  loadRefs();
+}
+async function createRef(){
+  const body = {
+    name: val('rf_name').trim(), email: val('rf_email').trim(),
+    code: val('rf_code').trim().toUpperCase(), percent: val('rf_pct'),
+    plan_scope: val('rf_plan')||null, max_redemptions: val('rf_max')||0
+  };
+  if(!body.name||!body.email||!body.code||!body.percent) return toast('اكمل الاسم والإيميل والكود والخصم','err');
+  const r = await post('/api/admin/referral/create', body);
+  if(r.ok){ toast('تمت الإضافة ✓','ok'); ['rf_name','rf_email','rf_code','rf_pct'].forEach(i=>{const e=document.getElementById(i); if(e)e.value='';}); loadRefs(); }
+  else err(r);
+}
+async function loadRefs(){
+  const box = document.getElementById('rfbox'); if(!box) return;
+  const r = await api('/api/admin/referrals');
+  const list = (r.ok && r.data.referrals) || [];
+  let h = '<div class="pan"><h3>⇄ المحيلون<em>'+list.length+'</em></h3>';
+  if(!list.length){ box.innerHTML = h + '<div class="empty">لا إحالات</div></div>'; return; }
+  h += '<div class="tw"><table><thead><tr><th>الاسم</th><th>الإيميل</th><th>الكود</th><th>الاستخدام</th></tr></thead><tbody>';
+  list.forEach(g=>{
+    h += '<tr><td>'+esc(g.name||'—')+'</td><td class="ltr">'+esc(g.email||'—')+'</td>'
+      + '<td class="ltr"><b>'+esc(g.code||'—')+'</b></td>'
+      + '<td>'+esc(g.redeemed!=null?g.redeemed:(g.uses&&g.uses.length)||0)+'</td></tr>';
+  });
+  box.innerHTML = h + '</tbody></table></div></div>';
+}
+
+/* ==========================================================
+   13. CMS — GET/POST /api/admin/content
+   ========================================================== */
+async function secCms(){
+  const r = await api('/api/admin/content');
+  if(!r.ok) return void (V.innerHTML='<div class="pan"><div class="empty">خطأ</div></div>');
+  const c = r.data.content||{}, fields = r.data.fields||[];
+  let h = '<div class="pan"><h3>✎ نصوص الموقع<em>'+fields.length+' حقل</em></h3><div class="pb">';
+  if(!fields.length) h += '<div class="empty">لا حقول</div>';
+  fields.forEach(f=>{
+    const v = c[f.key]==null?'':c[f.key];
+    h += '<div class="f" style="margin-bottom:12px"><label>'+esc(f.label)+'</label>'
+      + (f.type==='textarea'
+          ? '<textarea class="in" data-ck="'+escA(f.key)+'" rows="3">'+esc(v)+'</textarea>'
+          : '<input class="in" data-ck="'+escA(f.key)+'" value="'+escA(v)+'">')
+      + '</div>';
+  });
+  h += '<button class="btn p" onclick="saveCms()">حفظ المحتوى</button></div></div>';
+  V.innerHTML = h;
+}
+async function saveCms(){
+  const body = {};
+  document.querySelectorAll('[data-ck]').forEach(e=>{ body[e.getAttribute('data-ck')] = e.value; });
+  const r = await post('/api/admin/content', body);
+  if(r.ok) toast('تم الحفظ ✓','ok'); else err(r);
+}
+
+/* ==========================================================
+   Boot — whoami gate
+   ========================================================== */
+(async function boot(){
+  const r = await api('/api/admin/whoami');
+  if(!r.ok || !(r.data && (r.data.admin || r.data.ok))){
+    document.body.innerHTML = '<div style="display:grid;place-items:center;min-height:100vh;text-align:center;padding:22px">'
+      + '<div><div style="font-size:44px">🔒</div><h2 style="margin:11px 0">غير مسموح</h2>'
+      + '<p style="color:#7d8ca8">لازم تسجّل دخول بحساب إدارة.</p>'
+      + '<a href="/login.html?next=/admin.html" style="display:inline-block;margin-top:16px;background:#0ea5e9;'
+      + 'color:#04121c;padding:10px 22px;border-radius:9px;font-weight:700">تسجيل الدخول</a></div></div>';
+    return;
+  }
+  const email = (r.data.email || (r.data.admin && r.data.admin.email) || '') + '';
+  document.getElementById('who').innerHTML = '<span class="bg ok">إدارة</span> <span class="ltr">'+esc(email)+'</span>';
+  document.getElementById('whoFoot').textContent = email || 'حساب إدارة';
+  go(location.hash.slice(1) || 'dash');
+
+  // شارة المدفوعات المعلّقة في الشريط الجانبي — من بيانات حقيقية.
+  const p = await api('/api/admin/payments?status=pending');
+  const n = (p.ok && (p.data.payments||p.data.items||[]).length) || 0;
+  const pill = document.getElementById('pillPay');
+  pill.hidden = !n; pill.textContent = n;
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+# iOS-only launcher icon config.
+#
+# THE FILENAME MATTERS. Do not rename this to flutter_launcher_icons-ios.yaml.
+# flutter_launcher_icons scans the project directory for files matching
+# `flutter_launcher_icons-<name>.yaml` and treats every match as a build FLAVOR
+# that it runs automatically on every invocation. That is what broke build #19:
+# the Android job printed "Flavor: ios" and then died on
+# ios/Runner.xcodeproj/project.pbxproj, a path only the iOS job creates.
+#
+# Because this name is outside that pattern, it is never auto-discovered and
+# runs only when asked for explicitly, in the iOS job:
+#   dart run flutter_launcher_icons -f ios_launcher_icons.yaml
+flutter_launcher_icons:
+  android: false
+  ios: true
+  image_path: "assets/icon.png"
+  # The App Store rejects icons that keep an alpha channel, so transparency is
+  # flattened onto the brand background.
+  remove_alpha_ios: true
+  background_color_ios: "#070B14"

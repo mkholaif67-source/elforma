@@ -1,0 +1,160 @@
+      /* ── Pool Step Indicator ── */
+      #smps-phase-bar {
+        display:flex; align-items:center; gap:0;
+        margin-bottom:18px; border-radius:12px; overflow:hidden;
+        border:1.5px solid var(--border);
+      }
+      .smps-phase-btn {
+        flex:1; padding:10px 6px; font-size:12px; font-weight:800;
+        border:none; cursor:pointer; transition:all .2s;
+        display:flex; flex-direction:column; align-items:center; gap:3px;
+        background:var(--surface2); color:var(--text-muted);
+      }
+      .smps-phase-btn.active { background:var(--accent); color:#000; }
+      .smps-phase-btn.done   { background:rgba(0,212,170,0.15); color:var(--green); }
+      .smps-phase-btn .ph-num { font-size:16px; }
+      .smps-phase-btn .ph-lbl { font-size:10px; font-weight:700; }
+
+      /* ── Phase panels ── */
+      .smps-phase { display:none; }
+      .smps-phase.active { display:block; }
+
+      /* ── Meal slot card ── */
+      .smp-slot-card {
+        background:var(--surface2);
+        border:2px solid var(--border);
+        border-radius:16px; margin-bottom:12px; overflow:hidden;
+        transition: border-color .2s;
+      }
+      .smp-slot-card.has-foods { border-color:rgba(0,212,170,0.4); }
+      .smp-slot-card.expanding { border-color:var(--accent); }
+      .smp-slot-header {
+        display:flex; align-items:center; gap:10px;
+        padding:13px 14px; cursor:pointer;
+        user-select:none;
+      }
+      .smp-slot-icon { font-size:22px; flex-shrink:0; }
+      .smp-slot-info { flex:1; min-width:0; }
+      .smp-slot-title { font-size:14px; font-weight:800; color:var(--text); }
+      .smp-slot-sub { font-size:11px; color:var(--text-muted); margin-top:2px; }
+      .smp-slot-count {
+        font-size:11px; font-weight:800; padding:3px 10px;
+        border-radius:20px; flex-shrink:0;
+        background:rgba(0,212,170,0.12); color:var(--green);
+        border:1px solid rgba(0,212,170,0.25);
+        transition:all .2s;
+      }
+      .smp-slot-count.empty {
+        background:var(--surface3); color:var(--text-dim);
+        border-color:transparent;
+      }
+      .smp-slot-chevron {
+        font-size:14px; color:var(--text-dim); transition:transform .2s; flex-shrink:0;
+      }
+      .smp-slot-chevron.open { transform:rotate(180deg); }
+      .smp-slot-body { display:none; padding:0 14px 14px; }
+      .smp-slot-body.open { display:block; }
+
+      /* food picker inside slot */
+      .smp-food-search-wrap { position:relative; margin-bottom:8px; }
+      .smp-food-search { width:100%; background:var(--surface3); border:1.5px solid var(--border);
+        border-radius:8px; padding:8px 32px 8px 10px; color:var(--text); font-size:12px;
+        outline:none; direction:rtl; transition:border-color .2s; }
+      .smp-food-search:focus { border-color:var(--accent); }
+      .smp-cat-pills { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:8px; }
+      .smp-cat-pill {
+        padding:4px 9px; border-radius:16px; font-size:11px; font-weight:700;
+        background:var(--surface3); border:1px solid var(--border);
+        color:var(--text-muted); cursor:pointer; transition:all .15s;
+        white-space:nowrap;
+      }
+      .smp-cat-pill.active { background:rgba(255,107,53,0.15); border-color:var(--accent); color:var(--accent); }
+
+      /* food rows in slot picker */
+      .smp-food-list { max-height:220px; overflow-y:auto; border-radius:8px; border:1px solid var(--border); }
+      .smp-food-row {
+        display:flex; align-items:center; gap:8px; padding:8px 10px;
+        border-bottom:1px solid var(--border); cursor:pointer;
+        transition:background .15s;
+      }
+      .smp-food-row:last-child { border-bottom:none; }
+      .smp-food-row:hover { background:rgba(255,255,255,0.04); }
+      .smp-food-row.blocked { opacity:0.4; cursor:not-allowed; }
+      .smp-food-row.selected-in-pool { background:rgba(0,212,170,0.07); }
+      .smp-fr-check {
+        width:18px; height:18px; border-radius:5px; border:2px solid var(--border);
+        display:flex; align-items:center; justify-content:center;
+        font-size:11px; flex-shrink:0; transition:all .15s;
+      }
+      .smp-food-row.selected-in-pool .smp-fr-check {
+        background:var(--green); border-color:var(--green); color:#000;
+      }
+      .smp-fr-name { font-size:12.5px; font-weight:600; color:var(--text); flex:1; min-width:0; }
+      .smp-fr-macros { font-size:10.5px; color:var(--text-dim); white-space:nowrap; flex-shrink:0; }
+      .smp-fr-block-reason { font-size:10px; color:var(--red); flex-shrink:0; }
+
+      /* selected pool tags */
+      .smp-pool-tags { display:flex; flex-wrap:wrap; gap:5px; margin-top:10px; min-height:28px; }
+      .smp-pool-tag {
+        display:inline-flex; align-items:center; gap:4px; padding:4px 9px;
+        background:rgba(0,212,170,0.1); border:1px solid rgba(0,212,170,0.3);
+        border-radius:20px; font-size:11px; font-weight:700; color:var(--green);
+        cursor:pointer;
+      }
+      .smp-pool-tag:hover { background:rgba(232,76,76,0.1); border-color:rgba(232,76,76,0.3); color:var(--red); }
+      .smp-pool-tag .rm { font-size:12px; opacity:0.7; }
+
+      /* validation bar */
+      #smps-validation-bar { margin-top:6px; }
+      .smp-val-item {
+        display:flex; align-items:center; gap:7px;
+        font-size:12px; padding:5px 0;
+        color:var(--text-muted);
+      }
+      .smp-val-item.ok { color:var(--green); }
+      .smp-val-item.warn { color:var(--orange); }
+      .smp-val-item.err { color:var(--red); }
+
+      /* Phase 2: preview plan */
+      #smps-plan-preview { margin-top:4px; }
+      .smp-preview-meal {
+        background:var(--surface2); border:1px solid var(--border);
+        border-radius:14px; padding:13px 14px; margin-bottom:10px;
+      }
+      .smp-prev-header {
+        display:flex; align-items:center; gap:8px; margin-bottom:8px;
+      }
+      .smp-prev-title { font-size:13px; font-weight:800; color:var(--text); flex:1; }
+      .smp-prev-cals { font-size:12px; font-weight:800; color:var(--accent); }
+      .smp-prev-food-row {
+        display:flex; justify-content:space-between; align-items:center;
+        padding:5px 0; border-bottom:1px solid var(--border);
+        font-size:12px;
+      }
+      .smp-prev-food-row:last-child { border-bottom:none; }
+      .smp-prev-food-name { color:var(--text); font-weight:600; }
+      .smp-prev-food-g { color:var(--text-dim); font-size:11px; }
+
+      /* Week tabs */
+      #smps-week-tabs {
+        display:flex; gap:5px; flex-wrap:wrap; margin-bottom:14px;
+        overflow-x:auto; padding-bottom:4px;
+      }
+      .smps-wtab {
+        padding:6px 14px; border-radius:20px; font-size:12px; font-weight:800;
+        border:1.5px solid var(--border); background:var(--surface2);
+        color:var(--text-muted); cursor:pointer; white-space:nowrap;
+        transition:all .2s; flex-shrink:0;
+      }
+      .smps-wtab.active { background:var(--accent); border-color:var(--accent); color:#000; }
+
+      /* Pool summary badge */
+      #smps-pool-summary {
+        display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;
+      }
+      .smps-pool-badge {
+        display:inline-flex; align-items:center; gap:5px;
+        padding:5px 12px; border-radius:20px; font-size:11.5px; font-weight:800;
+        background:var(--surface2); border:1px solid var(--border); color:var(--text-muted);
+      }
+      .smps-pool-badge.filled { background:rgba(0,212,170,0.1); border-color:rgba(0,212,170,0.3); color:var(--green); }

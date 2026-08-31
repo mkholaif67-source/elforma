@@ -1,0 +1,47 @@
+# ElForma deployment. Designed so that nobody has to configure anything by hand:
+# the only value a human must supply is the mail transport key (see below), and
+# the app degrades gracefully until it is provided.
+services:
+  - type: web
+    name: elforma
+    runtime: docker
+    plan: starter
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: EF_ENV
+        value: production
+      - key: EF_TRUST_PROXY
+        value: "1"
+      # The database, the backups and the session secret all live on the disk
+      # mounted below, so they survive every deploy and restart.
+      - key: EF_DATA_DIR
+        value: /var/data/elforma
+      # EF_SECRET is deliberately NOT declared here.
+      #
+      # `generateValue: true` would mint a NEW secret on each deploy, and since
+      # sessions are signed with it, every user would be silently logged out --
+      # which is exactly the "my login stopped working" bug. With no value set,
+      # the server generates a secret once and persists it to EF_DATA_DIR, so
+      # sessions stay valid across deploys with zero manual setup.
+      #
+      # Optional: the outgoing mail transport for verification and password
+      # reset emails. Until these are set, emails are written to the outbox on
+      # disk instead of being delivered; nothing else breaks.
+      - key: EF_MAIL_API_URL
+        sync: false
+      - key: EF_MAIL_API_KEY
+        sync: false
+      - key: EF_MAIL_FROM
+        sync: false
+    disk:
+      name: elforma-data
+      mountPath: /var/data/elforma
+      sizeGB: 1
+
+  # NOTE: there is deliberately no cron service here.
+  # A Render disk can only be attached to ONE service, so a separate
+  # backup cron would either fail to deploy or mount its own EMPTY
+  # disk and cheerfully back up nothing. The nightly backup therefore
+  # runs inside the web service itself (lib/backup-scheduler.js),
+  # which is the only process that can actually see the database.

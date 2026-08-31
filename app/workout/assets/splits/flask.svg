@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64"><defs>
+<radialGradient id="bg" cx="50%" cy="36%" r="82%"><stop offset="0%" stop-color="#16243f"/><stop offset="100%" stop-color="#090d18"/></radialGradient>
+<linearGradient id="neon" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00e5b0"/><stop offset="100%" stop-color="#6c8ef5"/></linearGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffe07a"/><stop offset="100%" stop-color="#ff9d3c"/></linearGradient>
+<linearGradient id="fire" x1="0" y1="1" x2="0.2" y2="0"><stop offset="0%" stop-color="#ff6a13"/><stop offset="55%" stop-color="#ffb347"/><stop offset="100%" stop-color="#00e5b0"/></linearGradient>
+<filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="1.25" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs><rect x="1.5" y="1.5" width="61" height="61" rx="15" fill="url(#bg)" stroke="rgba(108,142,245,0.28)" stroke-width="1"/><g filter="url(#glow)" fill="none" stroke="url(#neon)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><line x1="25" y1="15" x2="39" y2="15"/><path d="M27 15 V28 L18 45 a3.5 3.5 0 0 0 3 5.5 H43 a3.5 3.5 0 0 0 3 -5.5 L37 28 V15"/><path d="M22 40 H42" stroke-width="2.4"/><circle cx="29" cy="44" r="1.6" fill="url(#neon)"/><circle cx="35" cy="46" r="1.2" fill="url(#neon)"/></g></svg>

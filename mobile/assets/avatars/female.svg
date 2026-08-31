@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160">
+  <defs>
+    <linearGradient id="fbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0E1626"/>
+      <stop offset="1" stop-color="#1A1533"/>
+    </linearGradient>
+    <linearGradient id="fring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FF6B9A"/>
+      <stop offset="1" stop-color="#B983FF"/>
+    </linearGradient>
+    <linearGradient id="fskin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F5D0B0"/>
+      <stop offset="1" stop-color="#E8B893"/>
+    </linearGradient>
+    <clipPath id="fclip"><circle cx="80" cy="80" r="72"/></clipPath>
+  </defs>
+  <circle cx="80" cy="80" r="78" fill="url(#fring)"/>
+  <circle cx="80" cy="80" r="72" fill="url(#fbg)"/>
+  <g clip-path="url(#fclip)">
+    <!-- shoulders -->
+    <path d="M20 168 C24 130 46 114 80 114 C114 114 136 130 140 168 Z" fill="#2A2150"/>
+    <path d="M30 168 C36 140 54 126 80 126 C106 126 124 140 130 168 Z" fill="#3A2E68"/>
+    <!-- long hair back -->
+    <path d="M44 74 C40 44 60 28 80 28 C100 28 120 44 116 74 C120 100 116 128 108 150 L104 120 C112 96 110 72 104 62 C98 100 62 100 56 62 C50 72 48 96 56 120 L52 150 C44 128 40 100 44 74 Z" fill="#3A2A22"/>
+    <!-- neck -->
+    <rect x="70" y="94" width="20" height="24" rx="10" fill="#DFAE88"/>
+    <!-- head -->
+    <circle cx="80" cy="66" r="29" fill="url(#fskin)"/>
+    <!-- hair front -->
+    <path d="M51 64 C51 40 66 30 80 30 C94 30 109 40 109 64 C106 54 98 50 92 51 C86 45 74 45 68 51 C62 50 54 54 51 64 Z" fill="#3A2A22"/>
+    <!-- eyes -->
+    <circle cx="70" cy="66" r="3.2" fill="#2B2320"/>
+    <circle cx="90" cy="66" r="3.2" fill="#2B2320"/>
+    <!-- lashes -->
+    <path d="M65 62 C67 60 71 60 73 62" fill="none" stroke="#2B2320" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M87 62 C89 60 93 60 95 62" fill="none" stroke="#2B2320" stroke-width="1.6" stroke-linecap="round"/>
+    <!-- brows -->
+    <path d="M64 57 C68 55 72 55 75 57" fill="none" stroke="#3A2A22" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M85 57 C88 55 92 55 96 57" fill="none" stroke="#3A2A22" stroke-width="2.2" stroke-linecap="round"/>
+    <!-- lips -->
+    <path d="M73 79 C77 83 83 83 87 79 C83 81 77 81 73 79 Z" fill="#D96A82"/>
+  </g>
+</svg>

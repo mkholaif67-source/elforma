@@ -1,0 +1,15 @@
+{
+  "name": "الفورمة",
+  "short_name": "الفورمة",
+  "description": "مدرّبك الذكي للتمرين والتغذية",
+  "start_url": "/app/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0a0e17",
+  "theme_color": "#0a0e17",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    { "src": "/assets/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

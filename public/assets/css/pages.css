@@ -1,0 +1,42 @@
+/* ===== ElForma secondary pages — layered ON TOP of landing.css (non-breaking) ===== */
+body{
+  background:
+    linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px) 0 0/48px 48px,
+    linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px) 0 0/48px 48px,
+    radial-gradient(920px 560px at 100% -8%, rgba(19,194,150,.20), transparent 60%),
+    radial-gradient(780px 520px at -6% 110%, rgba(65,208,255,.14), transparent 60%),
+    #070b14 !important;
+  background-attachment:fixed !important;
+}
+
+/* logo everywhere */
+.logo img,.co-logo img,.brand img{filter:drop-shadow(0 6px 18px rgba(19,194,150,.4))}
+.auth-card .logo{flex-direction:column;gap:10px !important}
+.auth-card .logo img{height:74px !important;width:auto !important}
+.auth-card .logo::after{content:"الفورمة";font-family:'Cairo',system-ui,sans-serif;font-weight:800;letter-spacing:0;line-height:1.5;padding-block:.12em;display:inline-block;background:linear-gradient(120deg,#5ff0c6,#2ee6ad 45%,#13c296 65%,#41d0ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.auth-card .logo::after{font-size:26px}
+header.nav .logo{gap:10px !important;align-items:center}
+header.nav .logo img{height:42px !important;width:auto !important}
+header.nav .logo::after{content:none !important}
+
+/* glass auth card + brand bar */
+.auth-wrap{background:transparent !important}
+.auth-card{background:linear-gradient(180deg,rgba(21,29,46,.94),rgba(12,18,30,.94)) !important;border:1px solid rgba(255,255,255,.1) !important;box-shadow:0 44px 100px -46px rgba(0,0,0,.85) !important;backdrop-filter:blur(20px);position:relative;overflow:hidden}
+.auth-card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#13c296,#41d0ff)}
+.auth-card .btn-primary{box-shadow:0 16px 38px -14px rgba(19,194,150,.7)}
+
+/* nav glass */
+header.nav{background:rgba(7,11,20,.72) !important;backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.08) !important}
+
+/* legal pages: card feel + gradient heading */
+.legal{background:linear-gradient(180deg,rgba(19,27,44,.72),rgba(12,18,30,.6));border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:44px 38px !important;margin-top:36px !important;margin-bottom:44px !important;box-shadow:0 40px 100px -60px rgba(0,0,0,.85);backdrop-filter:blur(10px)}
+.legal h1{background:linear-gradient(120deg,#2ee6ad,#41d0ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;display:inline-block}
+.legal h2{color:#fff}
+
+/* 404 pop */
+.auth-wrap a.btn-primary{box-shadow:0 16px 38px -14px rgba(19,194,150,.7)}
+
+/* ── floating WhatsApp button (secondary pages) ── */
+.ef-wa{position:fixed;bottom:28px;inset-inline-end:24px;z-index:9999;width:58px;height:58px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(37,211,102,.55);transition:.25s var(--ease);text-decoration:none}
+.ef-wa:hover{transform:scale(1.12);box-shadow:0 14px 38px rgba(37,211,102,.7)}
+.ef-wa svg{display:block}

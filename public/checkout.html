@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>إتمام الاشتراك · الفورمة</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="assets/logo-mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Noto+Kufi+Arabic:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/landing.css?v=100">
+<style>
+:root{--co-brand:#2ee6a6;--co-brand2:#13c296;--co-blue:#41d0ff;--co-line:rgba(255,255,255,.08);--co-muted:#8fa8a0;--co-txt:#eaf3fb}
+body{background:
+  radial-gradient(900px 520px at 100% -8%,rgba(19,194,150,.16),transparent 60%),
+  radial-gradient(760px 480px at -6% 108%,rgba(65,208,255,.12),transparent 60%),
+  linear-gradient(180deg,#060a12,#0a0f1b) !important;background-attachment:fixed;color:var(--co-txt)}
+.co-top{max-width:960px;margin:0 auto;padding:26px 18px 0;text-align:center}
+.co-logo{display:inline-flex;align-items:center;gap:9px;font-weight:900;font-size:22px;color:#fff}
+.co-logo img{height:40px;width:auto;filter:drop-shadow(0 6px 16px rgba(19,194,150,.4))}
+.co-wrap{max-width:960px;margin:0 auto;padding:28px 18px 90px;display:grid;grid-template-columns:1.4fr 1fr;gap:20px}
+@media(max-width:820px){.co-wrap{grid-template-columns:1fr}}
+.card{background:linear-gradient(180deg,rgba(20,29,46,.72),rgba(12,18,30,.62));border:1px solid var(--co-line);border-radius:20px;padding:24px;position:relative;overflow:hidden;backdrop-filter:blur(10px);box-shadow:0 30px 80px -60px rgba(0,0,0,.9)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--co-brand),var(--co-blue))}
+.card h1{margin:0 0 4px;font-size:24px;font-weight:900;font-family:'Noto Kufi Arabic',Cairo,sans-serif}
+.card h3{margin:0 0 10px;font-family:'Noto Kufi Arabic',Cairo,sans-serif}
+.muted{color:var(--co-muted)}
+.sum-head{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.sum-ic{width:46px;height:46px;border-radius:13px;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(150deg,rgba(46,230,166,.18),rgba(65,208,255,.12));border:1px solid rgba(46,230,166,.3)}
+.sum-ic svg{width:24px;height:24px;stroke:#5ff0c6}
+.rows{margin-top:12px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px dashed var(--co-line)}
+.row.total{border-bottom:0;font-weight:800;margin-top:4px}
+.row .big{font-size:26px;font-weight:900;background:linear-gradient(120deg,#5ff0c6,#41d0ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.anchor{color:var(--co-muted);text-decoration:line-through;opacity:.7;margin-inline-end:7px}
+.save{display:inline-block;margin-top:8px;color:var(--co-brand);font-weight:800;font-size:14px}
+.coupon{display:flex;gap:8px;margin-top:14px}
+.coupon input{flex:1;background:rgba(255,255,255,.05);border:1.5px solid var(--co-line);color:var(--co-txt);border-radius:11px;padding:12px 13px;font-family:inherit}
+.coupon input:focus{outline:none;border-color:rgba(46,230,166,.6)}
+.coupon button{background:rgba(255,255,255,.06);color:var(--co-txt);border:1px solid var(--co-line);border-radius:11px;padding:0 18px;cursor:pointer;font-family:inherit;font-weight:700}
+.coupon-msg{font-size:13px;margin-top:6px;min-height:1em}.coupon-msg.ok{color:var(--co-brand)}.coupon-msg.err{color:#fca5a5}
+.pm-grid{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 16px}
+.pm{flex:1;min-width:120px;text-align:center;padding:15px 12px;border:1.5px solid var(--co-line);border-radius:14px;cursor:pointer;background:rgba(255,255,255,.03);transition:.18s;font-weight:700;font-size:14px;color:#cfe0da}
+.pm:hover{border-color:rgba(46,230,166,.4);background:rgba(46,230,166,.05)}
+.pm.active{border-color:var(--co-brand);background:rgba(46,230,166,.1);box-shadow:0 0 0 3px rgba(46,230,166,.18);color:#fff}
+.pm .pmi{display:flex;align-items:center;justify-content:center;height:26px;margin-bottom:8px}
+.pm .pmi svg{width:24px;height:24px;stroke:#5ff0c6}
+.pm.active .pmi svg{stroke:#7dffd0}
+.panel{display:none;margin-top:6px}.panel.show{display:block}
+.field{margin:12px 0}.field label{display:block;font-size:13px;color:var(--co-muted);margin-bottom:7px;font-weight:600}
+.field input{width:100%;background:rgba(255,255,255,.05);border:1.5px solid var(--co-line);color:var(--co-txt);border-radius:11px;padding:12px 13px;font-family:inherit}
+.field input:focus{outline:none;border-color:rgba(46,230,166,.6);box-shadow:0 0 0 3px rgba(46,230,166,.12)}
+.copy{cursor:pointer;border-bottom:1px dotted var(--co-muted);color:#5ff0c6}
+.drop{border:1.5px dashed var(--co-line);border-radius:13px;padding:18px;text-align:center;cursor:pointer;color:var(--co-muted);margin-top:6px;transition:.18s}
+.drop:hover{border-color:rgba(46,230,166,.4)}
+.drop.has{border-color:var(--co-brand);color:var(--co-brand)}
+.guarantee{margin-top:14px;color:var(--co-muted);font-size:13px}
+.wa-cta{display:inline-block;margin-top:12px;background:#25d366;color:#04210a;font-weight:800;padding:12px 20px;border-radius:11px;text-decoration:none}
+.done{text-align:center;padding:22px}.done .big{width:74px;height:74px;margin:0 auto 14px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(46,230,166,.14);border:1px solid rgba(46,230,166,.34)}
+.done .big svg{width:38px;height:38px;stroke:#5ff0c6}
+.pm-fallback{padding:14px;color:var(--co-muted);line-height:1.9}
+.btn-primary{background:linear-gradient(135deg,#2ee6a6,#13c296 55%,#0a7d5f) !important;color:#04140f !important;border:none !important;border-radius:13px !important;font-weight:800 !important;box-shadow:0 14px 32px -14px rgba(19,194,150,.7)}
+</style>
+</head>
+<body>
+<div class="co-top"><a href="index.html" class="co-logo"><img src="assets/logo-mark.png" alt="الفورمة"> <span class="ef-name">الفورمة</span></a></div>
+
+<div class="co-wrap" id="loading"><div class="card" style="grid-column:1/-1;text-align:center">… جار التحميل</div></div>
+
+<div class="co-wrap" id="app" hidden>
+  <!-- Payment methods -->
+  <div class="card">
+    <h1>إتمام الاشتراك</h1>
+    <p class="muted">اختار طريقة الدفع المناسبة ليك.</p>
+    <div class="pm-grid" id="pmGrid"></div>
+
+    <div class="panel" id="panel-manual">
+      <p class="muted" id="manualDest"></p>
+      <div class="field"><label>رقم المحفظة/الحساب اللي حولت منه</label><input id="sender" inputmode="numeric" placeholder="01xxxxxxxxx"></div>
+      <div class="field"><label>رقم العملية (اختياري)</label><input id="ref" placeholder="مرجع التحويل"></div>
+      <div class="drop" id="drop"> ارفع صورة الإيصال (اختياري)</div>
+      <input id="receipt" type="file" accept="image/*" hidden>
+      <button class="btn btn-primary" id="btnManual" style="width:100%;margin-top:14px">تأكيد الدفع وإرسال الإيصال</button>
+    </div>
+
+    <div class="panel" id="panel-card">
+      <p class="muted">ادفع بأمان بالبطاقة عبر بوابة الدفع.</p>
+      <button class="btn btn-primary" id="btnCard" style="width:100%">الدفع بالبطاقة</button>
+      <div id="cardFrame"></div>
+    </div>
+
+    <div class="panel" id="panel-paypal">
+      <p class="muted">Pay securely in USD with PayPal.</p>
+      <div id="paypalBtns"></div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="card">
+    <div class="sum-head"><span class="sum-ic" id="planIc"></span><div><h3 id="planName">—</h3><span class="muted" id="planDur"></span></div></div>
+    <div class="rows">
+      <div class="row"><span>سعر الباقة</span><span id="rowBase">—</span></div>
+      <div class="row total"><span>الإجمالي</span><span class="big" id="rowTotal">—</span></div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/auth-client.js"></script>
+<script src="assets/js/toast.js"></script>
+<script>
+(function () {
+  'use strict';
+  var params = new URLSearchParams(location.search);
+  var planCode = params.get('plan') || 'm3';
+  var ICONS = { m1: '', m3: '', m6: '' };
+  var state = { plan: null, methods: {}, support: {}, currency: 'EGP', coupon: '', discount: 0, total: 0, base: 0, method: null, receipt: null };
+  var $ = function (id) { return document.getElementById(id); };
+  function guessTZ() { try { return (Intl.DateTimeFormat().resolvedOptions().timeZone === 'Africa/Cairo') ? 'EGP' : 'USD'; } catch (e) { return 'EGP'; } }
+  function money(n) { return state.currency === 'USD' ? ('$' + n) : (n + ' ج.م'); }
+  function toast(m, t) { if (window.EFToast) { (t === 'err' ? EFToast.err : t === 'ok' ? EFToast.ok : EFToast.show).call(EFToast, m); } }
+
+  async function boot() {
+    var user = await EFAuth.me();
+    if (!user) { location.href = 'login.html?next=' + encodeURIComponent('checkout.html?plan=' + planCode); return; }
+    var cfg = await fetch('/api/plans').then(function (r) { return r.json(); });
+    state.methods = cfg.methods || {}; state.support = cfg.support || {};
+    state.currency = (cfg.geo && cfg.geo.currency) || guessTZ();
+    state.plan = (cfg.plans || []).find(function (p) { return p.code === planCode; }) || (cfg.plans || [])[1];
+    if (!state.plan) { document.body.innerHTML = '<p style="padding:40px;text-align:center">الباقة غير موجودة</p>'; return; }
+    state.base = state.currency === 'USD' ? state.plan.price_usd : state.plan.price_egp;
+    state.total = state.base;
+    renderPlan(); renderMethods();
+    $('loading').hidden = true; $('app').hidden = false;
+  }
+
+  function renderPlan() {
+    $('planIc').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5 17.5 17.5M4 8l1-1M8 4 7 5M16 20l1-1M20 16l-1 1M2 12l2-2 3 3-2 2zM22 12l-2 2-3-3 2-2z"/></svg>';
+    $('planName').textContent = 'باقة ' + state.plan.name;
+    $('planDur').textContent = state.plan.tagline || (state.plan.months + ' أشهر');
+    renderTotals();
+  }
+  function renderTotals() {
+    var anc = state.currency === 'USD' ? state.plan.anchor_usd : state.plan.anchor_egp;
+    $('rowBase').innerHTML = (anc ? '<span class="anchor">' + money(anc) + '</span>' : '') + money(state.base);
+    $('rowTotal').textContent = money(state.total);
+  }
+
+  function renderMethods() {
+    var m = state.methods, grid = $('pmGrid'), list = [];
+    if (m.wallet) list.push({ k: 'wallet', i: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M16 15h2"/></svg>', t: 'محفظة إلكترونية' });
+    if (m.instapay) list.push({ k: 'instapay', i: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M4 12l4-4M4 12l4 4M20 12l-4-4M20 12l-4 4"/></svg>', t: 'InstaPay' });
+    if (m.card) list.push({ k: 'card', i: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>', t: 'بطاقة' });
+    if (m.paypal) list.push({ k: 'paypal', i: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 21l1.5-9M7 21H5l2-12h6a4 4 0 0 1 0 8H9"/></svg>', t: 'PayPal' });
+    if (state.currency === 'USD') { list = list.filter(function (o) { return o.k === 'paypal' || o.k === 'card'; }); }
+    grid.innerHTML = '';
+    if (!list.length) {
+      grid.innerHTML = '<div class="pm-fallback"><b>محتاج مساعدة في الدفع؟</b><br>لو مش عارف تدفع أو عايز تكمل بطريقة تانية، تواصل معنا دلوقتي وهنساعدك تفعل اشتراكك خطوة بخطوة.<br><a class="wa-cta" target="_blank" rel="noopener" href="https://wa.me/' + state.support.whatsapp + '?text=' + encodeURIComponent('محتاج مساعدة في الاشتراك في ' + state.plan.name + ' (' + state.total + ' ' + state.currency + ') — ممكن تساعدوني أكمل الدفع؟') + '"> كلمنا وهنساعدك</a></div>';
+      return;
+    }
+    list.forEach(function (o, idx) {
+      var el = document.createElement('div');
+      el.className = 'pm' + (idx === 0 ? ' active' : '');
+      el.innerHTML = '<span class="pmi">' + o.i + '</span>' + o.t;
+      el.onclick = function () { selectMethod(o.k, el); };
+      grid.appendChild(el);
+      if (idx === 0) selectMethod(o.k, el);
+    });
+  }
+  function selectMethod(k, el) {
+    state.method = k;
+    document.querySelectorAll('.pm').forEach(function (x) { x.classList.remove('active'); });
+    if (el) el.classList.add('active');
+    document.querySelectorAll('.panel').forEach(function (p) { p.classList.remove('show'); });
+    var panelId = (k === 'wallet' || k === 'instapay') ? 'panel-manual' : 'panel-' + k;
+    var panel = $(panelId); if (panel) panel.classList.add('show');
+    if (panelId === 'panel-manual') {
+      var dest = k === 'wallet'
+        ? 'حول المبلغ لرقم المحفظة: <b class="copy" data-c="' + state.support.wallet_number + '">' + state.support.wallet_number + '</b>'
+        : 'حول المبلغ عبر InstaPay إلى: <b class="copy" data-c="' + state.support.instapay_handle + '">' + state.support.instapay_handle + '</b>';
+      $('manualDest').innerHTML = dest + ' — المبلغ: <b>' + money(state.total) + '</b><br>بعد التحويل املأ البيانات وأكد الطلب.';
+    }
+    if (k === 'paypal') setupPaypal();
+  }
+
+  $('drop').onclick = function () { $('receipt').click(); };
+  $('receipt').onchange = function () {
+    var f = this.files[0]; if (!f) return;
+    if (f.size > 5 * 1024 * 1024) { toast('الصورة أكبر من 5 ميجا', 'err'); return; }
+    var rd = new FileReader();
+    rd.onload = function () { state.receipt = rd.result; $('drop').classList.add('has'); $('drop').textContent = ' ' + f.name; };
+    rd.readAsDataURL(f);
+  };
+
+  $('btnManual').onclick = async function () {
+    var sender = $('sender').value.replace(/\s+/g, '');
+    if (!/^\+?\d{6,20}$/.test(sender)) { toast('اكتب رقم التحويل صح', 'err'); return; }
+    this.disabled = true; this.textContent = '… جار الإرسال';
+    var body = { plan: state.plan.code, method: state.method, sender: sender, ref: $('ref').value, coupon: state.coupon, receipt: state.receipt };
+    var r = await fetch('/api/pay/manual', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(function (x) { return x.json(); }).catch(function () { return null; });
+    if (r && r.ok) { showDone(r); } else { toast((r && r.error) || 'حصل خطأ، حاول تاني', 'err'); this.disabled = false; this.textContent = 'تأكيد الدفع وإرسال الإيصال'; }
+  };
+  function showDone(r) {
+    var wa = r.wa_url ? '<a class="wa-cta" href="' + r.wa_url + '" target="_blank" rel="noopener"> أرسل التفاصيل على واتساب</a>' : '';
+    $('app').innerHTML = '<div class="card" style="grid-column:1/-1"><div class="done"><div class="big"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div><h1>وصلنا طلبك (#' + r.payment_id + ')</h1><p class="muted">هنراجع التحويل ونفعل اشتراكك خلال دقائق. لتسريع التفعيل ابعتلنا الإيصال على واتساب.</p>' + wa + '<div style="margin-top:18px"><a class="btn btn-ghost" href="account.html">روح لحسابي</a></div></div></div>';
+    toast('تم استلام طلبك ', 'ok');
+  }
+
+  $('btnCard').onclick = async function () {
+    this.disabled = true; this.textContent = '…';
+    var r = await fetch('/api/pay/paymob', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ plan: state.plan.code, coupon: state.coupon }) }).then(function (x) { return x.json(); }).catch(function () { return null; });
+    if (r && r.iframe_url) { $('cardFrame').innerHTML = '<iframe src="' + r.iframe_url + '" style="width:100%;height:560px;border:0;border-radius:12px;margin-top:12px"></iframe>'; }
+    else { toast('الدفع بالبطاقة غير متاح حاليا', 'err'); this.disabled = false; this.textContent = 'الدفع بالبطاقة'; }
+  };
+
+  var paypalLoaded = false;
+  function setupPaypal() {
+    if (paypalLoaded || !state.methods.paypal_client_id) return;
+    paypalLoaded = true;
+    var s = document.createElement('script');
+    s.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(state.methods.paypal_client_id) + '&currency=USD';
+    s.onload = function () {
+      if (!window.paypal) return;
+      window.paypal.Buttons({
+        createOrder: function () { return fetch('/api/pay/paypal/create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ plan: state.plan.code, coupon: state.coupon }) }).then(function (r) { return r.json(); }).then(function (d) { return d.id; }); },
+        onApprove: function (data) { return fetch('/api/pay/paypal/capture', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderId: data.orderID }) }).then(function (r) { return r.json(); }).then(function (d) { if (d.ok) { toast('تم الدفع ', 'ok'); location.href = 'account.html'; } else toast('لم يكتمل الدفع', 'err'); }); }
+      }).render('#paypalBtns');
+    };
+    document.head.appendChild(s);
+  }
+
+  document.addEventListener('click', function (e) {
+    var c = e.target.closest && e.target.closest('.copy');
+    if (c) { navigator.clipboard && navigator.clipboard.writeText(c.getAttribute('data-c')); toast('تم النسخ', 'ok'); }
+  });
+
+  boot();
+})();
+</script>
+<script src="assets/js/support.js"></script>
+</body>
+</html>

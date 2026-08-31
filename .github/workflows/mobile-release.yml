@@ -1,0 +1,126 @@
+name: إصدار الفورمة للمتاجر
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+env:
+  FLUTTER_VERSION: 'stable'
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+      - run: npm test && npm run test:contracts && npm run test:mobile-nutrition && npm run test:mobile-workout && npm run test:mobile-progress && npm run test:mobile-privacy && npm run test:mobile-adaptive && npm run test:parity
+
+  android:
+    needs: tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    env:
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: إنشاء مشروع Android
+        run: flutter create --org com.elforma --project-name elforma --platforms=android .
+      - name: تجهيز وتأمين إعدادات أندرويد (مصدر موحّد)
+        run: |
+          python3 tools/harden_android.py
+          # [FIX التقرير — CI] مسح ملف القالب بس، مش كل مجلد الاختبارات.
+          rm -f test/widget_test.dart
+      - name: توليد أيقونة التطبيق على شاشة الهاتف (لولاها تظهر أيقونة Flutter الافتراضية)
+        run: |
+          flutter pub get
+          dart run flutter_launcher_icons
+      - name: إعداد توقيع Google Play
+        run: python3 tools/apply_release_signing.py
+      - name: تفعيل desugaring المطلوب للتنبيهات
+        run: python3 tools/patch_android_build.py
+      - run: flutter pub get
+      - name: فحص الكود (يفشل عند الأخطاء والتحذيرات)
+        # [FIX التقرير — CI] شيلنا --no-fatal-warnings عشان تحذيرات Dart بتخبّي أخطاء حقيقية.
+        run: |
+          set +e
+          flutter analyze --no-fatal-infos > analyze.log 2>&1
+          ANALYZE_EXIT=$?
+          set -e
+          echo "===== ERRORS (build-breaking) ====="
+          grep -E "error [•-]" analyze.log || echo "(none)"
+          echo "===== WARNINGS (build-breaking) ====="
+          grep -E "warning [•-]" analyze.log | head -40 || echo "(none)"
+          echo "===== SUMMARY ====="
+          tail -3 analyze.log
+          if [ "$ANALYZE_EXIT" -ne 0 ]; then
+            echo "::error::فيه أخطاء أو تحذيرات برمجية فوق"
+            exit 1
+          fi
+          echo "✓ مفيش أخطاء ولا تحذيرات"
+      - name: اختبارات Flutter
+        run: flutter test
+      - run: flutter build apk --release --dart-define=EF_BASE_URL=https://elforma.onrender.com
+      - run: flutter build appbundle --release --dart-define=EF_BASE_URL=https://elforma.onrender.com
+      - uses: actions/upload-artifact@v4
+        with:
+          name: elforma-android-release
+          path: |
+            mobile/build/app/outputs/flutter-apk/app-release.apk
+            mobile/build/app/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+
+  ios:
+    needs: tests
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter create --org com.elforma --project-name elforma --platforms=ios .
+      # [FIX التقرير — CI] مسح ملف القالب بس، مش كل مجلد الاختبارات.
+      - run: rm -f test/widget_test.dart && flutter pub get
+      - name: توليد أيقونة التطبيق للآيفون (تشتغل بعد إنشاء مجلد ios)
+        run: dart run flutter_launcher_icons -f ios_launcher_icons.yaml
+      - name: فحص الكود (يفشل عند الأخطاء والتحذيرات)
+        # [FIX التقرير — CI] نفس سياسة وظيفة أندرويد.
+        run: |
+          set +e
+          flutter analyze --no-fatal-infos > analyze.log 2>&1
+          ANALYZE_EXIT=$?
+          set -e
+          echo "===== ERRORS (build-breaking) ====="
+          grep -E "error [•-]" analyze.log || echo "(none)"
+          echo "===== WARNINGS (build-breaking) ====="
+          grep -E "warning [•-]" analyze.log | head -40 || echo "(none)"
+          echo "===== SUMMARY ====="
+          tail -3 analyze.log
+          if [ "$ANALYZE_EXIT" -ne 0 ]; then
+            echo "::error::فيه أخطاء أو تحذيرات برمجية فوق"
+            exit 1
+          fi
+          echo "✓ مفيش أخطاء ولا تحذيرات"
+      - run: flutter build ios --release --no-codesign --dart-define=EF_BASE_URL=https://elforma.onrender.com
+      - run: cd build/ios/iphoneos && zip -qr ../../../../elforma-ios-unsigned.zip Runner.app
+      - uses: actions/upload-artifact@v4
+        with:
+          name: elforma-ios-unsigned
+          path: elforma-ios-unsigned.zip
+          if-no-files-found: error

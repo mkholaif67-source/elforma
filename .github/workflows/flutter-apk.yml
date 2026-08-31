@@ -1,0 +1,93 @@
+name: بناء تطبيق الفورمة الأصلي
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    env:
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v5
+      # المشروع محتاج Node 22+ (بيستخدم node:sqlite المدمج). من غير الخطوة دي
+      # الـ runner بيستخدم نسخة أقدم وخطوة الاختبارات تحت بتفشل.
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: اختبار عقود محركات التغذية والتمرين
+        working-directory: .
+        run: npm test && npm run test:contracts && npm run test:mobile-nutrition && npm run test:mobile-workout && npm run test:mobile-progress && npm run test:mobile-privacy && npm run test:mobile-adaptive && npm run test:parity && npm run test:push
+      - name: إنشاء مشروع أندرويد أصلي
+        run: |
+          # احفظ كل الكود الخاص قبل flutter create (اللي بيمسح lib/ بشكل تلقائي)
+          cp -r lib /tmp/elforma_lib_backup
+          cp -r assets /tmp/elforma_assets_backup
+          # أنشئ platform أندرويد بس
+          flutter create --org com.elforma --project-name elforma --platforms=android .
+          # استرجع الكود الخاص بعد flutter create
+          rm -rf lib assets
+          mv /tmp/elforma_lib_backup lib
+          mv /tmp/elforma_assets_backup assets
+          echo "✓ lib/ و assets/ اتستردوا بنجاح"
+      - name: تجهيز وتأمين إعدادات أندرويد (مصدر موحّد)
+        run: |
+          python3 tools/harden_android.py
+          # [FIX التقرير — CI] كان فيه "rm -rf test" هنا، يعني كل اختبارات Flutter
+          # بتتمسح قبل ما تتشغّل أصلاً. المطلوب مسح ملف القالب اللي
+          # flutter create بيولده بس (widget_test.dart) مش اختباراتنا الحقيقية.
+          rm -f test/widget_test.dart
+      - name: توليد أيقونة التطبيق على شاشة الهاتف (لولاها تظهر أيقونة Flutter الافتراضية)
+        run: |
+          flutter pub get
+          dart run flutter_launcher_icons
+      - name: توقيع الإصدار بمفتاح الرفع (يتخطّى تلقائيًا لو المفاتيح غير مضبوطة)
+        run: python3 tools/apply_release_signing.py
+      - name: تفعيل desugaring المطلوب للتنبيهات
+        run: python3 tools/patch_android_build.py
+      - name: جلب الاعتماديات
+        run: flutter pub get
+      - name: فحص الكود
+        # [FIX التقرير — CI] شيلنا --no-fatal-warnings. الـ warnings في Dart دي
+        # أخطاء حقيقية محتملة (null safety، متغيرات مش مستخدمة، مقارنات
+        # مستحيلة). فضلنا مستبقين --no-fatal-infos عشان ملاحظات الأسلوب
+        # (deprecated_member_use وخلافه) ماتوقفش الإصدار.
+        run: |
+          set +e
+          flutter analyze --no-fatal-infos > analyze.log 2>&1
+          ANALYZE_EXIT=$?
+          set -e
+          echo "===== ERRORS (build-breaking) ====="
+          grep -E "error [•-]" analyze.log || echo "(none)"
+          echo "===== WARNINGS (build-breaking) ====="
+          grep -E "warning [•-]" analyze.log | head -40 || echo "(none)"
+          echo "===== SUMMARY ====="
+          tail -3 analyze.log
+          if [ "$ANALYZE_EXIT" -ne 0 ]; then
+            echo "::error::فيه أخطاء أو تحذيرات برمجية فوق — لازم تتصلح قبل البناء"
+            exit 1
+          fi
+          echo "✓ مفيش أخطاء ولا تحذيرات — التحليل نجح"
+      - name: اختبارات Flutter (كانت بتتمسح قبل ما تتشغل)
+        # [FIX التقرير — CI] mobile/test/ فيه اختبارات حقيقية ماكانتش بتتشغل خالص.
+        run: flutter test
+      - name: بناء APK
+        run: flutter build apk --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: elforma-native-android-apk
+          path: mobile/build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error

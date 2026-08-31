@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تفعيل الحساب — الفورمة</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="assets/logo-mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Noto+Kufi+Arabic:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/landing.css?v=100">
+<link rel="stylesheet" href="assets/css/pages.css?v=100">
+<link rel="stylesheet" href="assets/css/secondary.css">
+</head>
+<body class="sec-page">
+<header class="nav" style="background:rgba(6,10,18,.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.07);position:sticky;top:0;z-index:100;">
+  <div class="container nav-in" style="display:flex;align-items:center;justify-content:space-between;">
+    <a class="logo" href="index.html" style="display:flex;align-items:center;gap:9px;text-decoration:none;">
+      <img src="assets/logo-mark.png" alt="الفورمة" style="height:32px;width:auto;">
+    </a>
+    <div style="display:flex;align-items:center;gap:4px;">
+      <a href="index.html" style="display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:8px;font-size:13.5px;font-weight:600;color:#9db3ab;text-decoration:none;transition:color .2s,background .2s;" onmouseover="this.style.color='#fff';this.style.background='rgba(255,255,255,.07)'" onmouseout="this.style.color='#9db3ab';this.style.background=''">الصفحة الرئيسية</a>
+      <a href="login.html" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:13.5px;font-weight:700;color:#2ee6a6;text-decoration:none;background:rgba(19,194,150,.12);border:1px solid rgba(19,194,150,.25);transition:background .2s;" onmouseover="this.style.background='rgba(19,194,150,.2)'" onmouseout="this.style.background='rgba(19,194,150,.12)'">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        تسجيل الدخول
+      </a>
+    </div>
+  </div>
+</header>
+
+<div class="status-wrap">
+  <div class="status-card">
+    <div class="status-glow"></div>
+    <div class="status-spin" id="spin"></div>
+    <div class="status-badge" id="badge" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    </div>
+    <h1 class="status-title">تفعيل الحساب</h1>
+    <p class="status-sub" id="sub">جاري تأكيد بريدك الإلكتروني...</p>
+    <div class="msg" id="msg"></div>
+    <div id="actions" style="display:none;margin-top:8px">
+      <a class="status-btn" href="/app/" style="display:block;text-align:center;text-decoration:none;">ابدأ الآن</a>
+    </div>
+  </div>
+</div>
+<script src="assets/js/auth-client.js"></script>
+<script>
+(function(){
+  var params=new URLSearchParams(location.search); var token=params.get('token')||'';
+  var sub=document.getElementById('sub'), msg=document.getElementById('msg'), actions=document.getElementById('actions');
+  var spin=document.getElementById('spin'), badge=document.getElementById('badge');
+  function show(t,cls){msg.textContent=t;msg.className='msg '+cls;}
+  function done(){ if(spin) spin.style.display='none'; if(badge) badge.style.display='flex'; }
+  if(!token){ done(); sub.textContent='رابط غير صالح'; show('الرابط ناقص أو غير صحيح. افتح الرابط من إيميل التفعيل.','err'); return; }
+  fetch('/api/auth/verify',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:token})})
+    .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
+    .then(function(res){
+      done();
+      if(res.ok){ sub.textContent='تم تفعيل حسابك بنجاح'; show('حسابك اتفعل. تقدر تكمل دلوقتي.','ok'); actions.style.display=''; }
+      else { sub.textContent='تعذر التفعيل'; show((res.j&&res.j.error==='invalid_or_expired')?'الرابط منتهي أو تم استخدامه. اطلب رابط تفعيل جديد من صفحة الحساب.':((res.j&&res.j.error)||'حصل خطأ'),'err'); }
+    })
+    .catch(function(){ done(); sub.textContent='تعذر الاتصال'; show('تعذر الاتصال بالخادم، حاول تاني.','err'); });
+})();
+</script>
+</body>
+</html>

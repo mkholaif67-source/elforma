@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>خطة مشاركة — الفورمة</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/png" href="assets/logo-mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#04140f;--card:#0a1f19;--line:rgba(255,255,255,.09);--txt:#e9f3ee;--muted:#8fa8a0;--brand:#2ee6a6;--danger:#ff7a7a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:Cairo,system-ui,sans-serif;line-height:1.7}
+.nav{border-bottom:1px solid var(--line);background:rgba(4,20,15,.92);position:sticky;top:0;z-index:10}
+.nav-in{max-width:940px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{color:var(--brand);font-weight:900;font-size:19px;text-decoration:none}
+.cta{background:rgba(46,230,166,.14);border:1.5px solid rgba(46,230,166,.4);color:var(--brand);border-radius:12px;padding:9px 18px;font-family:inherit;font-weight:700;font-size:14px;text-decoration:none}
+.wrap{max-width:940px;margin:0 auto;padding:28px 20px 70px}
+.head h1{margin:0 0 6px;font-size:26px}
+.head p{margin:0;color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:20px}
+.card h2{margin:0 0 4px;font-size:18px;color:var(--brand)}
+.card .sub{margin:0 0 16px;color:var(--muted);font-size:13px}
+.day{border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:14px}
+.day h3{margin:0 0 12px;font-size:15.5px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:right;padding:9px 8px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:700;font-size:12.5px}
+tr:last-child td{border-bottom:none}
+.kv{display:flex;flex-wrap:wrap;gap:10px}
+.kv div{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:13px}
+.kv b{display:block;color:var(--brand);font-size:15px;margin-top:2px}
+.note{margin-top:22px;padding:14px 18px;border-radius:14px;background:rgba(46,230,166,.08);border:1px solid rgba(46,230,166,.24);color:#bfe8d8;font-size:13.5px}
+.state{padding:70px 20px;text-align:center;color:var(--muted);font-size:15px}
+.state.err{color:var(--danger)}
+</style>
+</head>
+<body>
+<header class="nav"><div class="nav-in">
+  <a href="/" class="brand">الفورمة</a>
+  <a href="/signup.html" class="cta">اعمل خطتك انت كمان</a>
+</div></header>
+
+<main class="wrap">
+  <div id="root" class="state">جار تحميل الخطة…</div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  var root = document.getElementById('root');
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+  function fail(msg) { root.className = 'state err'; root.textContent = msg; }
+
+  // /share/<token>  ->  token
+  var parts = location.pathname.split('/').filter(Boolean);
+  var token = parts.length > 1 ? parts[parts.length - 1] : '';
+  if (!token) return fail('الرابط ناقص. اطلب رابط جديد من صاحب الخطة.');
+
+  function num(v) { return (v == null || v === '') ? '—' : v; }
+
+  function renderWorkout(w) {
+    if (!w) return '';
+    // The stored shape can be { plans:[...] } or { days:[...] } depending on
+    // where it was saved from, so handle both instead of assuming one.
+    var days = [];
+    if (Array.isArray(w.days)) days = w.days;
+    else if (Array.isArray(w.plans) && w.plans.length) {
+      days = w.plans[0] && Array.isArray(w.plans[0].days) ? w.plans[0].days : [];
+    }
+    if (!days.length) return '';
+    var html = '<div class="card"><h2>جدول التمرين</h2><p class="sub">' + days.length + ' يوم تدريب</p>';
+    days.forEach(function (d) {
+      var ex = d.exercises || d.items || [];
+      html += '<div class="day"><h3>' + esc(d.name || d.title || d.key || 'يوم تدريب') + '</h3>';
+      if (!ex.length) { html += '<p class="sub">راحة</p></div>'; return; }
+      html += '<table><thead><tr><th>التمرين</th><th>مجموعات</th><th>تكرارات</th><th>راحة</th></tr></thead><tbody>';
+      ex.forEach(function (e) {
+        html += '<tr><td>' + esc(e.name || e.n || '—') + '</td>'
+              + '<td>' + esc(num(e.sets)) + '</td>'
+              + '<td>' + esc(num(e.reps)) + '</td>'
+              + '<td>' + esc(e.rest ? e.rest + ' ث' : '—') + '</td></tr>';
+      });
+      html += '</tbody></table></div>';
+    });
+    return html + '</div>';
+  }
+
+  function renderNutrition(p) {
+    if (!p) return '';
+    var rows = [
+      ['الهدف', p.goal], ['الوزن', p.weight ? p.weight + ' كجم' : null],
+      ['الطول', p.height ? p.height + ' سم' : null], ['العمر', p.age],
+      ['عدد الوجبات', p.mealCount], ['أيام التمرين', p.trainingDays]
+    ].filter(function (r) { return r[1] != null && r[1] !== ''; });
+    if (!rows.length) return '';
+    var html = '<div class="card"><h2>بيانات الخطة الغذائية</h2>'
+             + '<p class="sub">الأرقام بتتحسب لحظياً جوه التطبيق حسب البيانات دي</p><div class="kv">';
+    rows.forEach(function (r) {
+      html += '<div>' + esc(r[0]) + '<b>' + esc(r[1]) + '</b></div>';
+    });
+    return html + '</div></div>';
+  }
+
+  fetch('/api/share/' + encodeURIComponent(token), { credentials: 'omit' })
+    .then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
+    .then(function (out) {
+      if (out.status === 404) return fail('الرابط مش موجود أو انتهت صلاحيته (٤٨ ساعة).');
+      if (out.status !== 200) return fail((out.body && out.body.error) || 'تعذّر تحميل الخطة.');
+
+      var d = out.body || {};
+      var plan = d.plan || {};
+      var body = renderWorkout(plan.workout) + renderNutrition(plan.nutritionProfile);
+      if (!body) return fail('مفيش محتوى في الخطة دي.');
+
+      var exp = '';
+      if (d.expiresAt) {
+        var t = new Date(d.expiresAt);
+        if (!isNaN(t)) exp = ' — الرابط صالح لحد ' + t.toLocaleString('ar-EG');
+      }
+
+      root.className = '';
+      root.innerHTML =
+        '<div class="head"><h1>خطة ' + esc(d.sharedBy || 'متدرب الفورمة') + '</h1>'
+        + '<p>نسخة للعرض فقط' + esc(exp) + '</p></div>'
+        + body
+        + '<div class="note">الخطة دي اتعملت بالفورمة على حسب بيانات صاحبها. '
+        + 'لو عايز خطة مظبوطة على جسمك انت، <a href="/signup.html" style="color:#2ee6a6">اعمل حسابك</a>.</div>';
+    })
+    .catch(function () { fail('تعذّر الاتصال بالسيرفر. جرّب تاني.'); });
+})();
+</script>
+</body>
+</html>

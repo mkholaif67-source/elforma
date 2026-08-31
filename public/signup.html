@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إنشاء حساب — الفورمة</title>
+<meta name="description" content="أنشئ حسابك مجانا واحصل على خطة تدريب وتغذية مخصصة لك.">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="assets/logo-mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Noto+Kufi+Arabic:wght@800;900&family=Rakkas&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;min-height:100dvh}
+body{
+  font-family:'Tajawal',system-ui,sans-serif;
+  background:#060a12;
+  color:#eef3fb;
+  display:flex;
+  align-items:stretch;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';
+  position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 900px 600px at 110% 10%, rgba(19,194,150,.13), transparent 60%),
+    radial-gradient(ellipse 700px 700px at -10% 90%, rgba(65,208,255,.09), transparent 60%);
+  pointer-events:none;
+}
+.page{display:flex;width:100%;min-height:100dvh;position:relative;z-index:1;}
+
+/* PANEL */
+.panel{
+  flex:0 0 38%;
+  order:1;
+  display:flex;flex-direction:column;
+  justify-content:center;
+  gap:48px;
+  padding:56px 44px;
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(155deg,#07130f 0%,#09160c 50%,#060d1a 100%);
+  border-left:1px solid rgba(255,255,255,.06);
+}
+.panel::before{
+  content:'';
+  position:absolute;
+  top:-80px;right:-80px;
+  width:360px;height:360px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(19,194,150,.14),transparent 65%);
+  pointer-events:none;
+}
+.panel-brand{
+  display:flex;align-items:center;gap:12px;
+  font-family:'Noto Kufi Arabic',sans-serif;
+  font-size:22px;font-weight:900;color:#fff;
+  position:relative;z-index:1;
+}
+.panel-brand img{width:58px;height:58px;object-fit:contain;}
+.panel-body{position:relative;z-index:1;}
+.panel-headline{
+  font-family:'Noto Kufi Arabic',sans-serif;
+  font-size:clamp(26px,3vw,38px);
+  font-weight:900;line-height:1.3;
+  color:#fff;
+  margin-bottom:14px;
+}
+.panel-headline em{
+  font-style:normal;
+  background:linear-gradient(120deg,#2ee6ad,#41d0ff);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.panel-sub{
+  font-size:15px;color:#7a9690;
+  line-height:1.85;
+  margin-bottom:36px;
+}
+.feat-item{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;}
+.feat-check{
+  width:22px;height:22px;border-radius:50%;
+  background:rgba(19,194,150,.15);
+  border:1.5px solid rgba(19,194,150,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;color:#2ee6a6;
+  flex-shrink:0;margin-top:3px;
+}
+.feat-item p{font-size:14px;color:#8faaa4;line-height:1.6;}
+.feat-item strong{color:#e0f5ef;font-weight:700;}
+.panel-deco{
+  position:absolute;bottom:-70px;left:-70px;
+  width:300px;height:300px;
+  border-radius:50%;
+  border:1px solid rgba(65,208,255,.07);
+  pointer-events:none;
+}
+.panel-deco::after{
+  content:'';
+  position:absolute;inset:-35px;
+  border-radius:50%;
+  border:1px solid rgba(19,194,150,.05);
+}
+
+/* FORM SIDE */
+.form-side{
+  flex:1;
+  order:2;
+  display:flex;align-items:center;justify-content:center;
+  padding:48px 32px;
+}
+.form-box{width:100%;max-width:460px;}
+
+.form-logo-mobile{
+  display:none;
+  align-items:center;gap:10px;
+  font-family:'Noto Kufi Arabic',sans-serif;
+  font-size:20px;font-weight:900;color:#fff;
+  margin-bottom:28px;
+  justify-content:center;
+}
+.form-logo-mobile img{width:48px;height:48px;object-fit:contain;}
+
+/* stylish form heading */
+.form-top-heading{
+  margin-bottom:28px;
+}
+.form-tag{
+  display:inline-flex;align-items:center;gap:7px;
+  background:linear-gradient(135deg,rgba(19,194,150,.15),rgba(65,208,255,.1));
+  border:1px solid rgba(19,194,150,.3);
+  border-radius:999px;
+  padding:5px 16px;
+  font-size:12.5px;font-weight:800;
+  color:#5ff0c6;
+  letter-spacing:.5px;
+  margin-bottom:14px;
+}
+.form-tag::before{content:'';font-size:11px;color:#2ee6a6;}
+.form-main-title{
+  font-family:'Noto Kufi Arabic',sans-serif;
+  font-size:clamp(24px,3vw,34px);
+  font-weight:900;
+  color:#fff;
+  line-height:1.2;
+  margin-bottom:8px;
+}
+.form-main-title span{
+  background:linear-gradient(120deg,#2ee6ad,#41d0ff);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.form-main-sub{
+  font-size:14.5px;
+  color:#7a9690;
+  line-height:1.7;
+}
+
+/* msg */
+.msg{display:none;padding:12px 16px;border-radius:10px;font-size:14px;font-weight:600;margin-bottom:18px;}
+.msg.ok{display:block;background:rgba(19,194,150,.12);border:1px solid rgba(19,194,150,.3);color:#5ff0c6;}
+.msg.err{display:block;background:rgba(220,60,60,.1);border:1px solid rgba(220,60,60,.25);color:#ff8080;}
+
+/* fields */
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:12.5px;font-weight:700;color:#6a8c84;margin-bottom:6px;letter-spacing:.3px;}
+.field input{
+  width:100%;
+  background:rgba(255,255,255,.05);
+  border:1.5px solid rgba(255,255,255,.1);
+  border-radius:12px;
+  padding:13px 16px;
+  font-family:'Tajawal',sans-serif;
+  font-size:15px;color:#eef3fb;
+  outline:none;
+  transition:border-color .2s,background .2s,box-shadow .2s;
+}
+.field input:focus{
+  border-color:rgba(19,194,150,.6);
+  background:rgba(19,194,150,.05);
+  box-shadow:0 0 0 3px rgba(19,194,150,.1);
+}
+.field input::placeholder{color:#3e5858;}
+
+/* phone */
+.phone-row{display:flex;gap:8px;align-items:stretch;}
+.cc-select{
+  flex:0 0 100px;
+  min-width:0;
+  height:50px;
+  background:#0d1f18;
+  border:1.5px solid rgba(255,255,255,.1);
+  border-radius:12px;
+  padding:0 10px;
+  font-family:'Tajawal',sans-serif;
+  font-size:14px;color:#eef3fb;
+  outline:none;
+  cursor:pointer;
+  transition:border-color .2s;
+  color-scheme:dark;
+}
+.cc-select:focus{border-color:rgba(19,194,150,.6);}
+.phone-input{
+  flex:1;min-width:0;
+  height:50px;
+  background:rgba(255,255,255,.05);
+  border:1.5px solid rgba(255,255,255,.1);
+  border-radius:12px;
+  padding:0 16px;
+  font-family:'Tajawal',sans-serif;
+  font-size:15px;color:#eef3fb;
+  outline:none;
+  transition:border-color .2s,background .2s,box-shadow .2s;
+}
+.phone-input:focus{
+  border-color:rgba(19,194,150,.6);
+  background:rgba(19,194,150,.05);
+  box-shadow:0 0 0 3px rgba(19,194,150,.1);
+}
+.phone-input::placeholder{color:#3e5858;}
+
+/* password */
+.pw-wrap{position:relative;}
+.pw-toggle{
+  position:absolute;top:50%;transform:translateY(-50%);
+  left:14px;
+  background:none;border:none;
+  color:#4a6060;cursor:pointer;
+  font-size:17px;padding:4px;line-height:1;
+  transition:color .2s;
+}
+.pw-toggle:hover{color:#2ee6a6;}
+.pw-strength{display:flex;gap:4px;margin-top:7px;}
+.pw-bar{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.07);transition:background .3s;}
+.pw-bar.weak{background:#e05050;}
+.pw-bar.fair{background:#f5b544;}
+.pw-bar.good{background:#2ee6a6;}
+
+/* submit */
+.btn-submit{
+  width:100%;
+  padding:15px;
+  border-radius:14px;
+  border:none;
+  background:linear-gradient(135deg,#2ee6a6 0%,#13c296 55%,#0a7d5f 100%);
+  color:#04140f;
+  font-family:'Tajawal',sans-serif;
+  font-size:16px;font-weight:800;
+  cursor:pointer;
+  margin-top:8px;
+  position:relative;overflow:hidden;
+  transition:transform .2s,box-shadow .2s;
+  box-shadow:0 10px 30px -10px rgba(19,194,150,.6);
+}
+.btn-submit::after{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(120deg,transparent 35%,rgba(255,255,255,.25) 50%,transparent 65%);
+  transform:translateX(-130%);transition:transform .6s;
+}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 16px 36px -10px rgba(19,194,150,.7);}
+.btn-submit:hover::after{transform:translateX(130%);}
+.btn-submit:active{transform:scale(.98);}
+.btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+
+.auth-links{text-align:center;margin-top:16px;}
+.auth-links p{font-size:14px;color:#7a9690;}
+.auth-links a{color:#2ee6a6;font-weight:700;text-decoration:none;}
+.auth-links a:hover{text-decoration:underline;}
+.terms-note{font-size:11.5px;color:#3e5858;margin-top:14px;text-align:center;line-height:1.7;}
+.terms-note a{color:#4ec9a4;text-decoration:none;}
+.terms-note a:hover{text-decoration:underline;}
+
+@media(max-width:860px){
+  .panel{display:none;}
+  .form-logo-mobile{display:flex;}
+  .form-side{padding:32px 20px;}
+}
+
+/* ── sub-nav ── */
+.snav{
+  position:fixed;top:0;right:0;left:0;z-index:200;
+  background:rgba(6,10,18,.90);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(255,255,255,.07);
+  height:52px;
+}
+.snav-in{
+  max-width:1100px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;height:100%;
+}
+.snav-logo{
+  display:flex;align-items:center;gap:9px;
+  font-family:'Noto Kufi Arabic',sans-serif;
+  font-size:16px;font-weight:900;color:#fff;
+  text-decoration:none;
+}
+.snav-logo svg{flex-shrink:0;}
+.snav-links{display:flex;align-items:center;gap:4px;}
+.snav-link{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:8px;
+  font-size:13.5px;font-weight:600;color:#9db3ab;
+  text-decoration:none;
+  transition:color .2s,background .2s;
+}
+.snav-link:hover{color:#fff;background:rgba(255,255,255,.07);}
+.snav-cta{
+  background:rgba(19,194,150,.12);
+  border:1px solid rgba(19,194,150,.25);
+  color:#2ee6a6;font-weight:700;
+}
+.snav-cta:hover{background:rgba(19,194,150,.2);color:#3fffc2;}
+
+/* ── google btn ── */
+.btn-google{
+  width:100%;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:13px 16px;
+  background:rgba(255,255,255,.05);
+  border:1.5px solid rgba(255,255,255,.12);
+  border-radius:14px;
+  color:#e8eff8;
+  font-family:'Tajawal',sans-serif;
+  font-size:14.5px;font-weight:700;
+  cursor:pointer;
+  transition:background .2s,border-color .2s,transform .15s;
+  margin-bottom:8px;
+}
+.btn-google:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.22);transform:translateY(-1px);}
+.btn-google:active{transform:scale(.98);}
+/* push content below fixed nav */
+@media(min-width:861px){.page{padding-top:52px;}}
+@media(max-width:860px){.page{padding-top:52px;}}
+</style>
+</head>
+<body>
+<nav class="snav" aria-label="شريط التنقل">
+  <div class="snav-in">
+    <a href="index.html" class="snav-logo">
+      <img src="assets/logo-mark.png" alt="الفورمة" style="height:38px;width:auto;object-fit:contain;">
+    </a>
+    <div class="snav-links">
+      <a href="index.html" class="snav-link">
+        الصفحة الرئيسية
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- VISUAL PANEL -->
+  <aside class="panel">
+    <div class="panel-deco"></div>
+    <div class="panel-brand">
+      <img src="assets/logo-mark.png" alt="الفورمة">
+    </div>
+    <div class="panel-body">
+      <h1 class="panel-headline">
+        جسمك يستاهل<br>
+        <em>خطة معمولة عليك انت</em>
+      </h1>
+      <p class="panel-sub">مش مجرد جدول تدريب أو دايت جاهز — دي خطة احترافية مبنية على بيانات جسمك وأسلوب حياتك وهدفك.</p>
+      <div class="feat-item">
+        <div class="feat-check">✓</div>
+        <p><strong>خطة مبنية لهدفك</strong> — تناسب وقتك ومستواك</p>
+      </div>
+      <div class="feat-item">
+        <div class="feat-check">✓</div>
+        <p><strong>متابعة ذكية وتطوير مستمر</strong> للخطة حتى تحقق هدفك</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- FORM SIDE -->
+  <main class="form-side">
+    <div class="form-box">
+
+      <div class="form-logo-mobile">
+        <img src="assets/logo-mark.png" alt="الفورمة">
+      </div>
+
+      <!-- stylish heading above form -->
+      <div class="form-top-heading">
+        <div class="form-tag">إنشاء حساب</div>
+        <h2 class="form-main-title">ابدأ <span>رحلتك الآن</span></h2>
+        <p class="form-main-sub">حسابك وخطتك في دقايق</p>
+      </div>
+
+      <div class="msg" id="msg"></div>
+
+      <form id="form" autocomplete="on" novalidate>
+        <div class="field">
+          <label>الاسم</label>
+          <input type="text" id="name" autocomplete="name" placeholder="اسمك (اختياري)">
+        </div>
+        <div class="field">
+          <label>البريد الإلكتروني</label>
+          <input type="email" id="email" autocomplete="email" placeholder="you@example.com">
+        </div>
+        <div class="field">
+          <label>رقم الهاتف</label>
+          <div class="phone-row">
+            <select id="cc" class="cc-select" aria-label="مفتاح الدولة"></select>
+            <input type="tel" id="phone" class="phone-input" inputmode="numeric" autocomplete="tel" placeholder="10 1234 5678">
+          </div>
+        </div>
+        <div class="field">
+          <label>كلمة المرور</label>
+          <div class="pw-wrap">
+            <input type="password" id="password" required autocomplete="new-password" placeholder="8 أحرف على الأقل" style="padding-left:44px">
+            <button type="button" class="pw-toggle" id="pwToggle" aria-label="إظهار / إخفاء"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+          <div class="pw-strength">
+            <div class="pw-bar" id="b1"></div><div class="pw-bar" id="b2"></div>
+            <div class="pw-bar" id="b3"></div><div class="pw-bar" id="b4"></div>
+          </div>
+        </div>
+        <button type="submit" class="btn-submit" id="btn">إنشاء حسابي مجانا</button>
+      </form>
+
+      
+      <div class="or-divider" style="display:flex;align-items:center;gap:12px;margin:18px 0 6px;color:#3a5050;font-size:13px;font-weight:600;"><span style="flex:1;height:1px;background:rgba(255,255,255,.07)"></span><span>أو</span><span style="flex:1;height:1px;background:rgba(255,255,255,.07)"></span></div>
+      <button type="button" class="btn-google" id="btnGoogle">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="flex-shrink:0">
+  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+</svg>
+        تسجيل بحساب Google‏‏
+      </button>
+
+      <div class="auth-links">
+        <p>عندك حساب بالفعل؟ <a href="login.html">سجل دخولك</a></p>
+      </div>
+      <p class="terms-note">بالتسجيل أنت توافق على <a href="terms.html">الشروط</a> و<a href="privacy.html">سياسة الخصوصية</a></p>
+
+    </div>
+  </main>
+
+</div>
+<script src="assets/js/countries.js"></script>
+<script src="assets/js/auth-client.js"></script>
+<script>
+(function(){
+  var params=new URLSearchParams(location.search),next=params.get('next')||'/app/';
+  var msg=document.getElementById('msg'),btn=document.getElementById('btn');
+  function show(t,cls){msg.textContent=t;msg.className='msg '+cls;}
+  EFPhone.fill(document.getElementById('cc'),'EG');
+  EFAuth.me().then(function(u){if(u)location.replace(next);});
+  var pwInput=document.getElementById('password');
+  document.getElementById('pwToggle').addEventListener('click',function(){
+    pwInput.type=pwInput.type==='password'?'text':'password';
+    this.innerHTML=pwInput.type==='password'?'<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>':'<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+  });
+  pwInput.addEventListener('input',function(){
+    var v=this.value,score=0;
+    if(v.length>=8)score++;if(/[A-Z]/.test(v)||/[a-z]/.test(v))score++;
+    if(/[0-9]/.test(v))score++;if(/[^A-Za-z0-9]/.test(v))score++;
+    var cls=score<=1?'weak':score===2?'fair':'good';
+    [1,2,3,4].forEach(function(i){document.getElementById('b'+i).className='pw-bar'+(i<=score?' '+cls:'');});
+  });
+  document.getElementById('form').addEventListener('submit',async function(e){
+    e.preventDefault();
+    var email=document.getElementById('email').value.trim();
+    var phone=EFPhone.build(document.getElementById('cc').value,document.getElementById('phone').value);
+    if(!email&&!phone){show('يرجى إدخال بريد إلكتروني أو رقم هاتف','err');return;}
+    var pw=document.getElementById('password').value;
+    if(pw.length<8){show('كلمة المرور تحتاج ل 8 أحرف على الأقل','err');return;}
+    btn.disabled=true;btn.textContent='جاري إنشاء حسابك...';
+    var r=await EFAuth.signup({name:document.getElementById('name').value.trim(),email:email,phone:phone,password:pw});
+    if(r.ok){show('تم إنشاء حسابك — جاري التحويل...','ok');location.replace(next);}
+    else{show((r.data&&r.data.error)||'حدث خطأ، يرجى المحاولة مجددا','err');btn.disabled=false;btn.textContent='إنشاء حسابي مجانا';}
+  });
+})();
+
+  // Google sign-in (connect via EF_GOOGLE_CLIENT_ID in .env when ready)
+  document.getElementById('btnGoogle').addEventListener('click', function() {
+    show('جاري تجهيز تسجيل Google — سيتاح قريبا', 'ok');
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تسجيل الدخول — الفورمة</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="assets/logo-mark.png">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#070B14;color:#EAF2F7;font-family:Cairo,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+.card{background:#0E1626;border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:40px 36px;width:100%;max-width:420px;text-align:center}
+.logo{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:28px}
+.logo img{height:48px;filter:drop-shadow(0 6px 20px rgba(0,212,170,.4))}
+.logo-name{font-size:26px;font-weight:900;color:#fff}
+.logo-name b{color:#00D4AA}
+.badge{display:inline-block;background:rgba(0,212,170,.12);color:#00D4AA;border:1px solid rgba(0,212,170,.25);border-radius:8px;padding:4px 12px;font-size:12px;font-weight:700;margin-bottom:24px}
+h2{font-size:22px;font-weight:900;margin-bottom:6px}
+.sub{color:#8496AB;font-size:13.5px;margin-bottom:28px;line-height:1.6}
+.fld{margin-bottom:16px;text-align:right}
+.fld label{display:block;font-size:12px;color:#8496AB;font-weight:700;margin-bottom:6px}
+.fld input{width:100%;background:#0B1220;border:1px solid rgba(255,255,255,.1);color:#EAF2F7;border-radius:12px;padding:13px 16px;font-family:Cairo,sans-serif;font-size:14px;transition:border-color .2s}
+.fld input:focus{outline:none;border-color:#00D4AA}
+.pw-wrap{position:relative}
+.pw-wrap input{padding-left:44px}
+.eye{position:absolute;left:13px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#8496AB;font-size:16px;line-height:1;padding:4px}
+.btn{width:100%;background:linear-gradient(135deg,#00D4AA,#00aeff);color:#04210a;border:none;border-radius:13px;padding:15px;font-family:Cairo,sans-serif;font-size:16px;font-weight:900;cursor:pointer;margin-top:8px;transition:opacity .2s;letter-spacing:.3px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.err{background:rgba(255,107,53,.12);border:1px solid rgba(255,107,53,.3);border-radius:10px;padding:11px 14px;margin-bottom:16px;font-size:13px;color:#FF8F5E;text-align:right;display:none}
+.back{margin-top:20px;font-size:13px;color:#8496AB}
+.back a{color:#00D4AA;text-decoration:none;font-weight:700}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <img src="assets/logo-mark.png" alt="الفورمة">
+    <div class="logo-name"><b></b></div>
+  </div>
+  <span class="badge">الفورمة</span>
+  <h2>تسجيل الدخول</h2>
+  <p class="sub">أدخل بياناتك للدخول إلى حسابك</p>
+
+  <div class="err" id="err"></div>
+
+  <div class="fld">
+    <label>البريد الإلكتروني</label>
+    <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+  </div>
+  <div class="fld">
+    <label>كلمة المرور</label>
+    <div class="pw-wrap">
+      <input type="password" id="pass" placeholder="كلمة المرور" autocomplete="current-password" id="pass">
+      <button class="eye" type="button" id="eyeBtn" onclick="toggleEye()">👁</button>
+    </div>
+  </div>
+
+  <button class="btn" id="btn" onclick="doLogin()">دخول</button>
+
+  <p class="back"><a href="index.html">← العودة للموقع</a></p>
+</div>
+
+<script>
+  var _params = new URLSearchParams(location.search);
+  var _next = _params.get('next');
+  var _adminTarget = _next || '/admin.html';
+  function _userTarget(){ return (_next && _next.indexOf('/admin')!==0) ? _next : '/app/'; }
+  var _hide = true;
+  function toggleEye(){
+    _hide=!_hide;
+    document.getElementById('pass').type=_hide?'password':'text';
+    document.getElementById('eyeBtn').textContent=_hide?'👁':'🙈';
+  }
+  async function doLogin(){
+    var email=document.getElementById('email').value.trim();
+    var pass=document.getElementById('pass').value;
+    var err=document.getElementById('err');
+    var btn=document.getElementById('btn');
+    if(!email||!pass){showErr('أدخل البريد وكلمة المرور');return;}
+    btn.disabled=true; btn.textContent='جاري التحقق...';
+    err.style.display='none';
+    try{
+      var r=await fetch('/api/auth/login',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pass})});
+      var j=await r.json();
+      if(r.ok&&j.user){
+        // Admins go to the control panel; normal users go straight to the app
+        var who=await fetch('/api/admin/whoami',{credentials:'include'});
+        var wj=await who.json();
+        if(wj&&wj.admin){location.href=_adminTarget;return;}
+        location.href=_userTarget();return;
+      } else {
+        showErr(j.error||'بيانات غلط، حاول تاني');
+      }
+    }catch(e){showErr('خطأ في الاتصال، حاول تاني');}
+    btn.disabled=false; btn.textContent='دخول';
+  }
+  function showErr(msg){
+    var e=document.getElementById('err'); e.textContent=msg; e.style.display='block';
+  }
+  document.addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+  // Auto-redirect if already logged in (admin -> panel, user -> app)
+  (async function(){
+    try{
+      var r=await fetch('/api/admin/whoami',{credentials:'include'});
+      var j=await r.json();
+      if(r.ok&&j.admin){location.href=_adminTarget;return;}
+      var m=await fetch('/api/auth/me',{credentials:'include'});
+      var mj=await m.json();
+      if(m.ok&&mj&&mj.user){location.href=_userTarget();}
+    }catch(e){}
+  })();
+</script>
+</body>
+</html>

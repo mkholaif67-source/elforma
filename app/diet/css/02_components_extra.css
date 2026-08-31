@@ -1,0 +1,334 @@
+    /* ══════════════════════════════════════════════
+       PHYSIO ANALYSIS — PREMIUM REDESIGN
+    ══════════════════════════════════════════════ */
+
+    /* ── Hero Header ─────────────────────────────── */
+    .pa-hero {
+      position: relative;
+      padding: 32px 20px 28px;
+      text-align: center;
+      background: linear-gradient(160deg,
+        rgba(155,89,182,0.13) 0%,
+        rgba(59,158,255,0.08) 50%,
+        rgba(34,217,114,0.05) 100%);
+      border-bottom: 1px solid rgba(155,89,182,0.18);
+      overflow: hidden;
+    }
+    .pa-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(155,89,182,0.12), transparent 70%);
+      pointer-events: none;
+    }
+    .pa-hero-icon {
+      width: 64px; height: 64px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(155,89,182,0.25), rgba(59,158,255,0.18));
+      border: 1.5px solid rgba(155,89,182,0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 30px;
+      margin: 0 auto 16px;
+      box-shadow: 0 0 32px rgba(155,89,182,0.25), 0 4px 16px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .pa-hero-title {
+      font-size: 19px; font-weight: 900;
+      color: var(--text); letter-spacing: -0.3px;
+      margin-bottom: 7px;
+    }
+    .pa-hero-sub {
+      font-size: 12px; color: var(--text-muted);
+      line-height: 1.75; max-width: 320px; margin: 0 auto;
+    }
+    .pa-hero-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 12px; border-radius: 20px; margin-top: 10px;
+      font-size: 11px; font-weight: 800;
+      background: rgba(155,89,182,0.14);
+      border: 1px solid rgba(155,89,182,0.35);
+      color: var(--purple);
+    }
+
+    /* ── Overall Score ────────────────────────────── */
+    .pa-score-wrap {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 24px 16px 20px;
+      position: relative;
+    }
+    .pa-score-ring {
+      width: 110px; height: 110px;
+      border-radius: 50%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      border: 4px solid;
+      transition: all 0.6s cubic-bezier(0.34,1.56,0.64,1);
+      position: relative;
+    }
+    .pa-score-ring::after {
+      content: '';
+      position: absolute; inset: -8px;
+      border-radius: 50%;
+      border: 2px solid;
+      opacity: 0.2;
+    }
+    .pa-score-num { font-size: 32px; font-weight: 900; line-height: 1; }
+    .pa-score-of { font-size: 10px; font-weight: 700; opacity: 0.55; margin-top: 1px; }
+    .pa-score-label {
+      font-size: 14px; font-weight: 900; margin-top: 10px;
+    }
+    .pa-score-sub { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+    /* ── Metrics Grid ─────────────────────────────── */
+    .pa-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      padding: 12px;
+      border-top: none;
+      border-bottom: none;
+    }
+    .pa-metric-cell {
+      position: relative; overflow: hidden;
+      background: linear-gradient(145deg, #090e1a, #0c1422);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px;
+      padding: 13px 10px 11px;
+      text-align: center;
+      transition: all 0.22s;
+      cursor: default;
+    }
+    .pa-metric-cell::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      opacity: 0; transition: opacity 0.22s;
+    }
+    .pa-metric-cell:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.12); }
+    .pa-metric-cell:hover::before { opacity: 1; }
+    .pa-metric-val {
+      font-size: 20px; font-weight: 900;
+      line-height: 1; margin-bottom: 5px;
+      letter-spacing: -0.02em;
+      text-shadow: 0 0 16px currentColor;
+    }
+    .pa-metric-lbl {
+      font-size: 9px; color: var(--text-dim);
+      font-weight: 800; letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .pa-metric-badge {
+      display: inline-block;
+      font-size: 8.5px; font-weight: 800;
+      padding: 2px 7px; border-radius: 10px; margin-top: 5px;
+      letter-spacing: 0.03em;
+    }
+
+    /* ── Section Wrapper ──────────────────────────── */
+    .pa-section {
+      padding: 18px 18px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .pa-section:last-child { border-bottom: none; }
+    .pa-section-title {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 900; color: var(--text);
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .pa-section-title .pa-stitle-icon {
+      width: 30px; height: 30px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; flex-shrink: 0;
+    }
+
+    /* ── Bar Rows (indicators) ────────────────────── */
+    .pa-bar-row {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 11px;
+    }
+    .pa-bar-row:last-child { margin-bottom: 0; }
+    .pa-bar-left {
+      display: flex; align-items: center; gap: 7px;
+      width: 140px; flex-shrink: 0;
+    }
+    .pa-bar-icon { font-size: 14px; }
+    .pa-bar-name { font-size: 11.5px; font-weight: 700; color: var(--text-muted); }
+    .pa-bar-track {
+      flex: 1; height: 8px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 4px; overflow: hidden;
+      position: relative;
+    }
+    .pa-bar-fill {
+      height: 100%; border-radius: 4px;
+      transition: width 0.9s cubic-bezier(0.4,0,0.2,1);
+      position: relative;
+    }
+    .pa-bar-fill::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(90deg, transparent 60%, rgba(255,255,255,0.25));
+      border-radius: 4px;
+    }
+    .pa-bar-pct {
+      font-size: 11px; font-weight: 900;
+      width: 34px; text-align: left; flex-shrink: 0;
+    }
+
+    /* ── Strength / Weakness Items ────────────────── */
+    .pa-sw-group { margin-bottom: 14px; }
+    .pa-sw-group:last-child { margin-bottom: 0; }
+    .pa-sw-label {
+      font-size: 10.5px; font-weight: 900;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 9px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .pa-sw-item {
+      display: flex; align-items: flex-start; gap: 9px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      margin-bottom: 6px;
+      font-size: 12px; line-height: 1.7;
+    }
+    .pa-sw-item:last-child { margin-bottom: 0; }
+    .pa-sw-item.strength {
+      background: rgba(34,217,114,0.06);
+      border: 1px solid rgba(34,217,114,0.15);
+      color: var(--text-muted);
+    }
+    .pa-sw-item.weakness {
+      background: rgba(245,158,11,0.06);
+      border: 1px solid rgba(245,158,11,0.15);
+      color: var(--text-muted);
+    }
+    .pa-sw-icon { flex-shrink: 0; margin-top: 1px; font-size: 13px; }
+
+    /* ── Forecast Timeline ────────────────────────── */
+    .pa-timeline {
+      position: relative;
+      padding-right: 20px;
+    }
+    .pa-timeline::before {
+      content: '';
+      position: absolute; right: 4px; top: 8px; bottom: 8px;
+      width: 2px;
+      background: linear-gradient(180deg,
+        rgba(59,158,255,0.4),
+        rgba(245,158,11,0.4),
+        rgba(34,217,114,0.4),
+        rgba(155,89,182,0.3));
+      border-radius: 2px;
+    }
+    .pa-timeline-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      margin-bottom: 14px; position: relative;
+    }
+    .pa-timeline-item:last-child { margin-bottom: 0; }
+    .pa-timeline-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      flex-shrink: 0; margin-top: 3px;
+      position: relative; z-index: 1;
+      box-shadow: 0 0 0 3px var(--bg);
+    }
+    .pa-timeline-body { flex: 1; }
+    .pa-timeline-title {
+      font-size: 12.5px; font-weight: 900; color: var(--text);
+      margin-bottom: 3px;
+    }
+    .pa-timeline-desc {
+      font-size: 11.5px; color: var(--text-muted); line-height: 1.7;
+    }
+
+    /* ── Metabolic State Banner ───────────────────── */
+    .pa-meta-banner {
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      position: relative; overflow: hidden;
+    }
+    .pa-meta-banner::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, transparent 60%, rgba(255,255,255,0.03));
+      pointer-events: none;
+    }
+    .pa-meta-chips {
+      display: flex; flex-wrap: wrap; gap: 7px;
+      margin-bottom: 10px;
+    }
+    .pa-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 5px 11px; border-radius: 20px;
+      font-size: 11px; font-weight: 800;
+    }
+
+    /* ── Summary Card ─────────────────────────────── */
+    .pa-summary {
+      border-radius: 14px;
+      padding: 16px;
+      position: relative; overflow: hidden;
+      background: linear-gradient(135deg,
+        rgba(155,89,182,0.1) 0%,
+        rgba(59,158,255,0.07) 100%);
+      border: 1.5px solid rgba(155,89,182,0.22);
+    }
+    .pa-summary::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 100% 0%, rgba(155,89,182,0.08), transparent 60%);
+      pointer-events: none;
+    }
+    .pa-summary-title {
+      font-size: 13px; font-weight: 900; color: var(--purple);
+      margin-bottom: 10px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .pa-summary-row {
+      display: flex; align-items: flex-start; gap: 8px;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(155,89,182,0.1);
+      font-size: 12px;
+    }
+    .pa-summary-row:last-child { border-bottom: none; }
+    .pa-summary-key {
+      font-weight: 800; color: var(--text);
+      width: 72px; flex-shrink: 0;
+    }
+    .pa-summary-val { color: var(--text-muted); line-height: 1.7; flex: 1; }
+
+    /* ── Realistic Forecast Box ───────────────────── */
+    .pa-forecast-box {
+      border-radius: 12px; padding: 12px 14px; margin-top: 12px;
+      font-size: 11.5px; line-height: 1.8;
+      background: rgba(59,158,255,0.07);
+      border: 1px solid rgba(59,158,255,0.18);
+      color: var(--blue);
+    }
+
+    /* ── Sleep Warning ────────────────────────────── */
+    .pa-sleep-warn {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 12px 14px; border-radius: 12px; margin-bottom: 12px;
+      background: rgba(245,158,11,0.07);
+      border: 1px solid rgba(245,158,11,0.22);
+      font-size: 12px; color: var(--orange); line-height: 1.75;
+    }
+
+    /* ── Loading ──────────────────────────────────── */
+    .pa-loading {
+      text-align: center; padding: 52px 20px;
+      color: var(--text-muted); font-size: 13px;
+    }
+    .pa-spinner {
+      width: 44px; height: 44px;
+      border: 3px solid rgba(155,89,182,0.15);
+      border-top-color: var(--purple);
+      border-radius: 50%;
+      animation: paSpin 0.85s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes paSpin { to { transform: rotate(360deg); } }
+
+      /* pa-metrics-grid mobile override merged into main @media(max-width:600px) above */

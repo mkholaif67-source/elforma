@@ -1,0 +1,73 @@
+name: elforma
+description: ElForma — native training & nutrition app
+publish_to: 'none'
+version: 2.10.29+53
+
+# `Color.withValues(alpha:)` replaced the deprecated `withOpacity` across all
+# 18 screens, and that API landed in Flutter 3.27 / Dart 3.6. Declaring the
+# real floor here is what keeps the promise honest -- an older SDK would fail
+# loudly at resolution instead of confusingly at analysis.
+environment:
+  sdk: '>=3.6.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.2.0
+  shared_preferences: ^2.2.2
+  # The login session lives in the OS keychain / EncryptedSharedPreferences,
+  # never in plaintext SharedPreferences (see Api._secure in lib/api.dart).
+  flutter_secure_storage: ^9.2.2
+  cupertino_icons: ^1.0.6
+  url_launcher: ^6.3.0
+  flutter_local_notifications: ^17.2.2
+  timezone: ^0.9.4
+  path_provider: ^2.1.4
+  share_plus: ^10.0.2
+  cross_file: ^0.3.4+2
+  flutter_svg: ^2.0.10
+  connectivity_plus: ^6.0.3
+  wakelock_plus: ^1.2.0
+  # تشغيل فحص الإشعارات في الخلفية والتطبيق مقفول (lib/background_poll.dart).
+  # لازم 0.10.x: النسخ الأقدم (0.5.x) مابتعرّفش namespace في الـGradle وبتفشل مع AGP 8.
+  workmanager: ^0.10.7
+  # دخول/تسجيل مباشر بحساب Google. الربط الأصلي (OAuth Client ID
+  # لـ Android/iOS) بيتعمل في إعدادات المنصة لاحقًا.
+  google_sign_in: ^6.2.1
+
+dev_dependencies:
+  # [FIX CI] كانت ناقصة تمامًا. mobile/test/ فيه 3 ملفات اختبار بتعمل
+  # import لـ package:flutter_test، وبدون التبعية دي الـ analyzer بيطلّع
+  # 264 خطأ (undefined 'test' / 'expect' / 'group'). ماكانتش بتظهر قبل كده
+  # لأن الـ CI كان بيمسح مجلد test كله قبل الفحص.
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  # Generates the OUTSIDE launcher / home-screen icon (adaptive on Android).
+  # After pulling, run once:  dart run flutter_launcher_icons
+  flutter_launcher_icons: ^0.14.1
+
+# Home-screen (launcher) icon — distinct from the in-app logo widget.
+flutter_launcher_icons:
+  android: true
+  # Deliberately false. The Android CI job runs `flutter create --platforms=android`,
+  # so there is no ios/ directory when this step executes; asking for iOS icons
+  # made the tool throw PathNotFoundException and killed the whole APK build.
+  # The iOS job creates its own platform and uses ios_launcher_icons.yaml.
+  ios: false
+  image_path: "assets/icon.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "#070B14"
+  adaptive_icon_foreground: "assets/icon_foreground.png"
+  remove_alpha_ios: true
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/logo.png
+    - assets/logo_lockup.png
+    - assets/icon.png
+    - assets/icon_foreground.png
+    - assets/social/
+    - assets/avatars/
+    - assets/wallets/

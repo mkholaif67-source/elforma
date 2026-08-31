@@ -1,0 +1,71 @@
+# ElForma static analysis policy
+#
+# Why this file exists: the cloud build was failing on `flutter analyze` while
+# the only visible output was 108 `withOpacity is deprecated` notices. Those
+# notices are style advice, not defects -- `withOpacity` is still correct,
+# working Flutter. Letting them drown the log meant real errors were invisible.
+#
+# Policy:
+#   - genuine mistakes (undefined names, type errors, dead code) stay loud
+#   - cosmetic deprecation advice is demoted so it can never mask a real error
+#   - the build gate itself fails ONLY on `error` severity (see the workflow)
+
+# Deliberately self-contained: no `include:` of package:flutter_lints. The
+# analyzer resolves an included package URI from the pub cache, and in the CI
+# job analysis can run before that URI is resolvable, producing a confusing
+# `include_file_not_found`. The handful of rules that actually catch bugs are
+# listed explicitly below instead of inherited.
+analyzer:
+  errors:
+    # Cosmetic API-modernisation advice. Kept as info, never build-breaking.
+    deprecated_member_use: ignore
+    deprecated_member_use_from_same_package: ignore
+    # Generated Android/iOS scaffolding is not ours to lint.
+    unnecessary_import: info
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - "**/*.g.dart"
+
+linter:
+  rules:
+    # These two catch real bugs in a Flutter app and are worth keeping strict.
+    - avoid_empty_else
+    - unrelated_type_equality_checks
+
+    # [FIX M5 — ماكانش فيه لينت حقيقي على 18,140 سطر Dart]
+    # مازلنا مش بنعمل include لـ package:flutter_lints — للسبب المذكور فوق
+    # (حل مسار الحزمة ممكن يفشل في CI ويدي include_file_not_found).
+    # بدال كده نسخنا قواعد flutter_lints اللي بتمسك أخطاء حقيقية صراحة،
+    # فمفيش تبعية جديدة ومفيش خطر فشل في البناء.
+    # كلها مستوى info بالافتراض جوا analyzer، والبوابة لسه بتفشل على error بس.
+
+    # أخطاء منطق حقيقية
+    - avoid_relative_lib_imports
+    - avoid_types_as_parameter_names
+    - await_only_futures
+    - control_flow_in_finally
+    - empty_statements
+    - hash_and_equals
+    # ملاحظة: iterable_contains_unrelated_type و list_remove_unrelated_type
+    # كانوا هنا واتشالوا — القاعدتين دول اتحذفوا من Dart 3.3.0 وبقوا بيطلّعوا
+    # removed_lint warning بيكسر البناء. وظيفتهم اندمجت جوا
+    # unrelated_type_equality_checks المفعّلة فوق.
+    - no_duplicate_case_values
+    - throw_in_finally
+    - unnecessary_statements
+    - valid_regexps
+
+    # أخطاء async/BuildContext — أشهر مصدر لـ crashes في Flutter
+    - unawaited_futures
+    - use_build_context_synchronously
+
+    # نظافة مفيدة بتقلل اللخبطة
+    - always_use_package_imports
+    - cancel_subscriptions
+    - close_sinks
+    - prefer_final_locals
+    # unnecessary_null_comparison اتشال — ده اسم تشخيص (diagnostic) مش قاعدة
+    # لينت، فالمحلل كان بيرفضه بـ undefined_lint warning. التشخيص نفسه شغال
+    # تلقائيًا من غير ما نطلبه (وهو اللي مسك بالفعل غلطة pricing_screen).

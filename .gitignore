@@ -1,0 +1,18 @@
+# secrets & database
+.env
+data/
+*.db
+*.db-wal
+*.db-shm
+.secret
+
+# logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# node (none needed but just in case)
+node_modules/

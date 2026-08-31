@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الفورمة · حسابي</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="assets/logo-mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Noto+Kufi+Arabic:wght@700;800;900&family=Rakkas&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060a12;--bg2:#0a0f1b;
+  --card:linear-gradient(180deg,rgba(20,29,46,.72),rgba(12,18,30,.62));
+  --line:rgba(255,255,255,.08);
+  --txt:#eaf3fb;--muted:#8fa8a0;
+  --brand:#2ee6a6;--brand2:#13c296;--blue:#41d0ff;--danger:#ff7a7a;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;color:var(--txt);font-family:Cairo,system-ui,sans-serif;min-height:100vh;
+  background:
+    radial-gradient(900px 520px at 100% -8%,rgba(19,194,150,.16),transparent 60%),
+    radial-gradient(760px 480px at -6% 108%,rgba(65,208,255,.12),transparent 60%),
+    linear-gradient(180deg,var(--bg),var(--bg2));
+  background-attachment:fixed;
+}
+a{color:inherit;text-decoration:none}
+h1,h2{font-family:'Noto Kufi Arabic',Cairo,sans-serif}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:20;background:rgba(7,11,20,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.nav-in{max-width:1040px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:12px 20px}
+.brand{display:inline-flex;align-items:center;gap:10px;font-weight:900;font-size:20px;color:inherit}
+.brand img{height:34px;width:auto;filter:drop-shadow(0 6px 16px rgba(19,194,150,.4))}
+.brand b{background:linear-gradient(120deg,#2ee6ad,#41d0ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--txt);border-radius:12px;padding:10px 16px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;transition:.18s}
+.btn:hover{border-color:rgba(46,230,166,.5);background:rgba(46,230,166,.06)}
+.btn-primary{background:linear-gradient(135deg,#2ee6a6,#13c296 55%,#0a7d5f);color:#04140f;border:none;box-shadow:0 14px 32px -14px rgba(19,194,150,.7)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 18px 40px -14px rgba(19,194,150,.8)}
+.btn-danger{border-color:rgba(255,107,107,.4);color:var(--danger);background:rgba(255,107,107,.06)}
+.btn-danger:hover{background:rgba(255,107,107,.12);border-color:rgba(255,107,107,.6)}
+
+/* layout */
+.wrap{max-width:1040px;margin:0 auto;padding:30px 20px 90px}
+.head{margin:8px 0 26px}
+.head h1{margin:0 0 6px;font-size:30px;font-weight:900;background:linear-gradient(120deg,#eafff8,#5ff0c6 55%,#41d0ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.head p{margin:0;color:var(--muted);font-size:15px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}}
+
+/* cards */
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;position:relative;overflow:hidden;backdrop-filter:blur(10px);box-shadow:0 30px 80px -60px rgba(0,0,0,.9)}
+.card::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%;background:linear-gradient(180deg,var(--brand),var(--blue));opacity:.85}
+.card h2{margin:0 0 16px;font-size:18px;font-weight:800;color:#fff;display:flex;align-items:center;gap:10px}
+.rows{display:flex;flex-direction:column}
+.row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px dashed var(--line)}
+.row:last-child{border-bottom:none}
+.row .k{color:var(--muted);font-size:14px}
+.row .v{font-weight:700;font-size:14px;text-align:left;color:#e9f3ee}
+
+/* forms */
+label{display:block;font-size:13px;color:var(--muted);margin:14px 0 7px;font-weight:600}
+input{width:100%;background:rgba(255,255,255,.05);border:1.5px solid var(--line);border-radius:12px;color:var(--txt);padding:13px 14px;font-family:inherit;font-size:14px;transition:border-color .2s,box-shadow .2s,background .2s}
+input:focus{outline:none;border-color:rgba(46,230,166,.6);background:rgba(46,230,166,.05);box-shadow:0 0 0 3px rgba(46,230,166,.12)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+
+/* badges + msgs */
+.badge{display:inline-block;padding:3px 11px;border-radius:999px;font-size:12px;font-weight:700}
+.badge.ok{background:rgba(46,230,166,.16);color:var(--brand)}
+.badge.free{background:rgba(159,178,208,.14);color:var(--muted)}
+.msg{margin:14px 0 0;padding:12px 15px;border-radius:11px;font-size:14px;display:none;font-weight:600}
+.msg.ok{display:block;background:rgba(46,230,166,.12);color:var(--brand);border:1px solid rgba(46,230,166,.3)}
+.msg.err{display:block;background:rgba(255,122,122,.1);color:var(--danger);border:1px solid rgba(255,122,122,.3)}
+.dl{display:flex;flex-direction:column;gap:10px}
+.hint{color:var(--muted);font-size:13px;margin:8px 0 0;line-height:1.7}
+.full{grid-column:1/-1}
+.loading{color:var(--muted);padding:70px 20px;text-align:center;font-size:15px}
+</style>
+</head>
+<body>
+<header class="nav"><div class="nav-in">
+  <a href="/" class="brand"><img src="assets/logo-mark.png" alt="الفورمة"></a>
+  <button class="btn" id="logout"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> تسجيل الخروج</button>
+</div></header>
+
+<main class="wrap">
+  <div class="head"><h1>حسابي</h1><p id="hello">إدارة بياناتك واشتراكك وخططك في مكان واحد</p></div>
+  <div id="app" class="loading">جار تحميل بياناتك…</div>
+</main>
+
+<script>
+var $=function(s,r){return (r||document).querySelector(s)};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function api(url,opts){opts=opts||{};opts.credentials='same-origin';opts.headers=opts.headers||{};if(opts.body&&typeof opts.body!=='string'){opts.headers['Content-Type']='application/json';opts.body=JSON.stringify(opts.body)}return fetch(url,opts).then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,data:j}}).catch(function(){return {ok:r.ok,status:r.status,data:{}}})})}
+
+var PLAN_AR={free:'مجاني',m1:'اشتراك شهر',m3:'اشتراك 3 شهور',m6:'اشتراك 6 شهور'};
+var PROV_AR={instapay:'إنستاباي / محفظة',paymob:'بطاقة بنكية',paypal:'PayPal',manual:'تحويل يدوي'};
+var GOAL_AR={fatloss:'خسارة دهون',muscle:'بناء عضل',mass:'زيادة وزن',strength:'قوة',fitness:'لياقة عامة'};
+var ACT_AR={sedentary:'قليل الحركة',light:'نشاط خفيف',moderate:'نشاط متوسط',active:'نشيط',veryActive:'نشيط جدا'};
+var MODE_AR={gym:'جيم',home:'بيت',none:'بدون معدات'};
+var GENDER_AR={male:'ذكر',female:'أنثى'};
+
+function daysLeft(iso){if(!iso)return null;return Math.ceil((new Date(iso)-new Date())/86400000)}
+function pickProfile(sr){var obj=(sr&&(sr.state||sr))||{};var e=obj['EF_UNIFIED_PROFILE'];var raw=e&&(e.v!==undefined?e.v:(e.value!==undefined?e.value:e));if(!raw)return null;if(typeof raw==='string'){try{return JSON.parse(raw)}catch(x){return null}}return raw}
+
+Promise.all([api('/api/auth/me'),api('/api/pay/mine').catch(function(){return{data:{}}}),api('/api/state').catch(function(){return{data:{}}})]).then(function(res){
+  var me=res[0].data||{};
+  if(!me.user){location.href='login.html?next=/account.html';return}
+  var u=me.user, sub=me.subscription||{plan:'free',status:'active'};
+  var pays=(res[1].data&&(res[1].data.payments||res[1].data))||[]; if(!Array.isArray(pays))pays=[];
+  render(u,sub,pays[0]||null,pickProfile(res[2].data)||{});
+}).catch(function(){$('#app').className='';$('#app').innerHTML='<div class="card">حصلت مشكلة في تحميل البيانات، جرب تعمل تحديث للصفحة</div>'});
+
+function render(u,sub,lastPay,prof){
+  var paid=sub.plan&&sub.plan!=='free'&&sub.status==='active';
+  var dl=daysLeft(sub.current_period_end);
+  var payMethod=lastPay?(PROV_AR[lastPay.provider]||lastPay.provider):(paid?'—':'لسه مفيش دفع');
+  $('#hello').textContent='أهلا '+(u.name||'بطل')+' — إدارة بياناتك واشتراكك وخططك في مكان واحد';
+  function stat(k,v){return '<div class="row"><span class="k">'+k+'</span><span class="v">'+esc(v)+'</span></div>'}
+
+  var subCard='<div class="card"><h2>الاشتراك والدفع</h2><div class="rows">'
+    +'<div class="row"><span class="k">الخطة</span><span class="v">'+(PLAN_AR[sub.plan]||sub.plan||'مجاني')+' '+(paid?'<span class="badge ok">مفعل</span>':'<span class="badge free">مجاني</span>')+'</span></div>'
+    +stat('الحالة',sub.status==='active'?'نشط':(sub.status||'—'))
+    +stat('طريقة الدفع',payMethod)
+    +stat('الأيام المتبقية',paid?(dl!=null?(dl>0?dl+' يوم':'انتهى'):'غير محدد'):'—')
+    +stat('تاريخ التجديد',sub.current_period_end?new Date(sub.current_period_end).toLocaleDateString('ar-EG'):'—')
+    +'</div>';
+  if(!paid){subCard+='<div class="actions"><a class="btn btn-primary" href="/#pricing">اشترك دلوقتي</a></div>'}
+  if(paid){subCard+='<h2 style="margin-top:20px">تحميل خططك</h2><div class="dl"><a class="btn btn-primary" href="/app/workout/dashboard.html">فتح خطة التمرين وتحميلها</a><a class="btn btn-primary" href="/app/diet/dashboard.html">فتح خطة التغذية وتحميلها</a><p class="hint">افتح الخطة واستخدم زر التصدير / الطباعة لحفظها PDF</p></div>'}
+  subCard+='</div>';
+
+  var g=prof.gender||prof.sex, goal=prof.goal, act=prof.activity||prof.activityLevel, mode=prof.trainingMode||prof.mode;
+  var trainCard='<div class="card"><h2>ملفك التدريبي</h2><div class="rows">'
+    +stat('النوع',GENDER_AR[g]||g||'—')
+    +stat('السن',prof.age?prof.age+' سنة':'—')
+    +stat('الطول',prof.height?prof.height+' سم':'—')
+    +stat('الوزن',prof.weight?prof.weight+' كجم':'—')
+    +stat('الهدف',GOAL_AR[goal]||goal||'—')
+    +stat('مستوى النشاط',ACT_AR[act]||act||'—')
+    +stat('مكان التمرين',MODE_AR[mode]||mode||'—')
+    +(prof.bmi?stat('BMI',prof.bmi):'')
+    +(prof.tdee?stat('السعرات التقريبية',prof.tdee+' كالوري'):'')
+    +'</div><p class="hint">بتعدل ملفك التدريبي من داخل لوحة تحكم التمرين أو التغذية</p></div>';
+
+  var infoCard='<div class="card"><h2>البيانات الشخصية</h2>'
+    +'<label>الاسم</label><input id="f_name" value="'+esc(u.name||'')+'" placeholder="اسمك">'
+    +'<label>البريد الإلكتروني</label><input id="f_email" type="email" value="'+esc(u.email||'')+'" placeholder="you@example.com">'
+    +'<label>رقم الهاتف</label><input id="f_phone" value="'+esc(u.phone||'')+'" placeholder="01xxxxxxxxx">'
+    +'<div class="actions"><button class="btn btn-primary" id="saveProfile">حفظ التعديلات</button></div>'
+    +'<div class="msg" id="m_profile"></div>'
+    +'<div class="row" style="margin-top:14px"><span class="k">عضو منذ</span><span class="v">'+(u.created_at?new Date(u.created_at).toLocaleDateString('ar-EG'):'—')+'</span></div></div>';
+
+  var passCard='<div class="card"><h2>تغيير كلمة المرور</h2>'
+    +'<label>كلمة المرور الحالية</label><input id="p_cur" type="password" placeholder="••••••••">'
+    +'<label>كلمة المرور الجديدة</label><input id="p_new" type="password" placeholder="8 أحرف على الأقل">'
+    +'<label>تأكيد كلمة المرور الجديدة</label><input id="p_new2" type="password" placeholder="اكتبها تاني">'
+    +'<div class="actions"><button class="btn btn-primary" id="savePass">تحديث كلمة المرور</button></div>'
+    +'<div class="msg" id="m_pass"></div></div>';
+
+  var dataCard='<div class="card full"><h2>بياناتك ملكك</h2>'
+    +'<p class="hint">تقدر تنزل نسخة كاملة من بياناتك أو تحذف حسابك نهائيا في أي وقت</p>'
+    +'<div class="actions"><a class="btn" href="/api/account/export">تنزيل بياناتي (JSON)</a><button class="btn btn-danger" id="delAcc">حذف الحساب نهائيا</button></div>'
+    +'<div class="msg" id="m_data"></div></div>';
+
+  $('#app').className='';
+  $('#app').innerHTML='<div class="grid">'+infoCard+subCard+passCard+trainCard+dataCard+'</div>';
+
+  $('#saveProfile').addEventListener('click',function(){var b=this;b.disabled=true;api('/api/account/profile',{method:'POST',body:{name:$('#f_name').value,email:$('#f_email').value,phone:$('#f_phone').value}}).then(function(r){b.disabled=false;var m=$('#m_profile');if(r.ok){m.className='msg ok';m.textContent='اتحفظت بياناتك بنجاح'}else{m.className='msg err';m.textContent=(r.data&&r.data.error)||'حصلت مشكلة، حاول تاني'}})});
+  $('#savePass').addEventListener('click',function(){var m=$('#m_pass');var n=$('#p_new').value,n2=$('#p_new2').value;if(n!==n2){m.className='msg err';m.textContent='كلمتا المرور غير متطابقتين';return}var b=this;b.disabled=true;api('/api/account/password',{method:'POST',body:{current:$('#p_cur').value,next:n}}).then(function(r){b.disabled=false;if(r.ok){m.className='msg ok';m.textContent='اتغيرت كلمة المرور بنجاح';$('#p_cur').value='';$('#p_new').value='';$('#p_new2').value=''}else{m.className='msg err';m.textContent=(r.data&&r.data.error)||'حصلت مشكلة، حاول تاني'}})});
+  $('#delAcc').addEventListener('click',function(){var m=$('#m_data');if(!confirm('متأكد إنك عايز تحذف حسابك؟ ده هيمسح كل بياناتك وخططك نهائيا'))return;api('/api/account/delete',{method:'POST'}).then(function(r){if(r.ok){location.href='/'}else{m.className='msg err';m.textContent=(r.data&&r.data.error)||'حصلت مشكلة في الحذف'}})});
+}
+
+$('#logout').addEventListener('click',function(){api('/api/auth/logout',{method:'POST'}).then(function(){location.href='/'}).catch(function(){location.href='/'})});
+</script>
+</body>
+</html>
